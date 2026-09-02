@@ -1,0 +1,71 @@
+<div style="max-width:960px;margin:0 auto;padding:0 1.5rem;">
+
+        <div style="text-align:center;margin-bottom:3rem;">
+          <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:1rem;">Hardware Platform</p>
+          <h2 class="font-display" style="font-size:2.25rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">System Architecture</h2>
+          <p class="font-mono" style="font-size:11px;color:#00F0FF;letter-spacing:0.1em;">
+            PYNQ-ZU <span style="color:#4B5563;">(Zynq UltraScale+ MPSoC based platform)</span>
+          </p>
+        </div>
+
+        <!-- ASCII Architecture Diagram -->
+        <div class="technical-panel" style="padding:3rem 2rem;border-color:rgba(255,255,255,0.05);background:rgba(14,17,23,0.6);overflow-x:auto;">
+          <pre class="font-mono" style="font-size:11px;color:#6B7280;line-height:1.7;text-align:center;white-space:pre;">
+          MICROPHONE INPUT (ADAU1761 · 24-bit / 96 kHz)
+                         ↓
+             AXI4-Stream DMA Interface
+                         ↓
+          ┌──────────────────────────────────┐
+          │        PROGRAMMABLE LOGIC         │
+          │          (PL Fabric)              │
+          │                                   │
+          │  ┌─────────────────────────────┐  │
+          │  │    SIGNAL PREPROCESSING     │  │
+          │  │  Decimation · Framing · FFT │  │
+          │  └──────────────┬──────────────┘  │
+          │                 ↓                 │
+          │  ┌─────────────────────────────┐  │
+          │  │      DSP ACCELERATOR        │  │
+          │  │  Spectral Subtraction       │  │
+          │  │  Wavelet Thresholding       │  │
+          │  │  RLS Adaptive Filter        │  │
+          │  └──────────────┬──────────────┘  │
+          └─────────────────┼─────────────────┘
+                            ↓
+          ┌──────────────────────────────────┐
+          │         ARM Cortex-A53           │
+          │    (Python / ML Classifier)       │
+          │  Noise Classification → Params   │
+          └──────────────────┬───────────────┘
+                             ↓
+             AXI4-Stream DMA → ADAU1761
+                             ↓
+            SPEAKER OUTPUT — Enhanced Speech
+          </pre>
+        </div>
+
+        <!-- Key metrics strip -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-top:2rem;">
+          <div class="metric-card">
+            <div class="metric-value">2.24 ms</div>
+            <div class="metric-label">FPGA Latency</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">638×</div>
+            <div class="metric-label" style="color:#00F0FF;">Speedup vs Software</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">100 MHz</div>
+            <div class="metric-label">PL Clock</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">8.17%</div>
+            <div class="metric-label">DSP Slice Usage</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">3.201 W</div>
+            <div class="metric-label">Total On-Chip Power</div>
+          </div>
+        </div>
+
+      </div>

@@ -1,0 +1,67 @@
+<div style="max-width:800px;margin:0 auto;padding:0 1.5rem;">
+
+        <div style="text-align:center;margin-bottom:4rem;">
+          <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:1rem;">Architecture</p>
+          <h2 class="font-display" style="font-size:2.25rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;">Our Solution</h2>
+        </div>
+
+        <p style="color:#6B7280;font-size:0.9rem;line-height:1.8;max-width:580px;margin:0 auto 4rem;text-align:center;">
+          The architecture deliberately separates noise identification from signal processing.
+          Machine learning classifies the noise characteristics. Specialized DSP algorithms perform the actual audio enhancement.
+        </p>
+
+        <!-- Pipeline Diagram -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+
+          <!-- Node -->
+          <div class="technical-panel" style="width:100%;max-width:320px;padding:1.25rem 2rem;border-color:rgba(0,240,255,0.25);text-align:center;">
+            <div class="font-mono" style="font-size:11px;letter-spacing:0.18em;color:#00F0FF;text-transform:uppercase;">Audio Input</div>
+            <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:4px;">WAV / MP3 · 16 kHz · Mono</div>
+          </div>
+          <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);"></div>
+
+          <div class="technical-panel" style="width:100%;max-width:320px;padding:1.25rem 2rem;text-align:center;">
+            <div class="font-mono" style="font-size:11px;letter-spacing:0.14em;color:#9CA3AF;text-transform:uppercase;">Preprocessing</div>
+            <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:4px;">Resample · Normalize · Frame</div>
+          </div>
+          <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);"></div>
+
+          <div class="technical-panel" style="width:100%;max-width:320px;padding:1.25rem 2rem;border-color:rgba(168,85,247,0.25);text-align:center;">
+            <div class="font-mono" style="font-size:11px;letter-spacing:0.14em;color:#A855F7;text-transform:uppercase;">ML Identification</div>
+            <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:4px;">Classifies noise characteristics only</div>
+          </div>
+          <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);"></div>
+
+          <!-- Parallel DSP -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:440px;">
+            <div class="technical-panel" style="padding:1.25rem 1rem;text-align:center;">
+              <div class="font-mono" style="font-size:10px;letter-spacing:0.1em;color:#38BDF8;text-transform:uppercase;">Spectral Processing</div>
+              <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:6px;">STFT · Spectral Subtraction · ISTFT</div>
+            </div>
+            <div class="technical-panel" style="padding:1.25rem 1rem;text-align:center;">
+              <div class="font-mono" style="font-size:10px;letter-spacing:0.1em;color:#60A5FA;text-transform:uppercase;">Wavelet Processing</div>
+              <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:6px;">Multi-resolution Thresholding</div>
+            </div>
+          </div>
+          <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);"></div>
+
+          <div class="technical-panel" style="width:100%;max-width:320px;padding:1.25rem 2rem;border-color:rgba(16,185,129,0.25);text-align:center;">
+            <div class="font-mono" style="font-size:11px;letter-spacing:0.18em;color:#10B981;text-transform:uppercase;">Enhanced Audio</div>
+            <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:4px;">16-bit PCM WAV · Improved SNR</div>
+          </div>
+
+        </div>
+
+        <!-- Key distinction note -->
+        <div style="margin-top:4rem;padding:1.5rem;border:1px solid rgba(255,255,255,0.06);border-radius:8px;background:rgba(255,255,255,0.02);">
+          <div class="font-mono" style="font-size:9px;letter-spacing:0.15em;color:#4B5563;text-transform:uppercase;margin-bottom:0.75rem;">Key Design Principle</div>
+          <p style="color:#6B7280;font-size:0.85rem;line-height:1.7;margin:0;">
+            ML is used exclusively for <span style="color:#A855F7;">noise environment classification</span>.
+            It does not perform the noise suppression itself.
+            The actual audio enhancement is carried out by the
+            <span style="color:#38BDF8;">spectral subtraction</span> and
+            <span style="color:#60A5FA;">wavelet denoising</span> DSP pipeline.
+          </p>
+        </div>
+
+      </div>

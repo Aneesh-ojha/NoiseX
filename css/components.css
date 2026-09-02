@@ -1,0 +1,174 @@
+/* ==========================================================================
+   NoiseX — Component Specific Styles
+   ========================================================================== */
+
+/* ── View Section Visibility ────────────────────────────────────────────── */
+.view-section {
+  display: none;
+}
+
+.view-section.active {
+  display: block;
+}
+
+/* ── Home Hero Viewport ─────────────────────────────────────────────────── */
+.hero-viewport {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* ── Animated Scroll Caret ──────────────────────────────────────────────── */
+@keyframes caret-bounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.6;
+  }
+}
+
+.scroll-caret {
+  animation: caret-bounce 2.2s ease-in-out infinite;
+}
+
+/* ── Processing Checklist Item ──────────────────────────────────────────── */
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4B5563;
+  transition: color 0.3s ease;
+}
+
+.checklist-item .step-box {
+  width: 12px;
+  height: 12px;
+  border: 1px solid #374151;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.checklist-item.done {
+  color: #00F0FF;
+}
+
+.checklist-item.done .step-box {
+  border-color: #00F0FF;
+  background: rgba(0, 240, 255, 0.15);
+}
+
+.checklist-item.running {
+  color: #9CA3AF;
+}
+
+/* ── Backend Status Banner ──────────────────────────────────────────────── */
+.backend-notice {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.backend-online {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10B981;
+}
+
+.backend-offline {
+  background: rgba(251, 191, 36, 0.07);
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  color: #FBB724;
+}
+
+.backend-error {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #EF4444;
+}
+
+/* ── Confidence Indicator Bar ───────────────────────────────────────────── */
+.confidence-bar-track {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 2px;
+  height: 4px;
+  overflow: hidden;
+}
+
+.confidence-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: #00F0FF;
+  width: 0%;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Metric Cards ───────────────────────────────────────────────────────── */
+.metric-card {
+  background: #121620;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.metric-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #F3F4F6;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.metric-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6B7280;
+}
+
+/* ── Audio Play Button ──────────────────────────────────────────────────── */
+.play-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #9CA3AF;
+  flex-shrink: 0;
+}
+
+.play-btn:hover {
+  border-color: rgba(0, 240, 255, 0.4);
+  color: #00F0FF;
+  background: rgba(0, 240, 255, 0.06);
+}
+
+.play-btn.playing {
+  border-color: #00F0FF;
+  color: #00F0FF;
+  background: rgba(0, 240, 255, 0.08);
+}

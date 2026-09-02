@@ -1,0 +1,89 @@
+<div style="max-width:900px;margin:0 auto;padding:0 1.5rem;">
+
+        <div style="text-align:center;margin-bottom:1.5rem;">
+          <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:1rem;">Benchmarks</p>
+          <h2 class="font-display" style="font-size:2.25rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;">Results</h2>
+        </div>
+        <p class="font-mono" style="text-align:center;font-size:10px;color:#4B5563;letter-spacing:0.08em;margin-bottom:4rem;">
+          PYNQ-ZU hardware measurements · MATLAB simulation verified
+        </p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:3rem;">
+          <div class="metric-card"><div class="metric-value">2.24 ms</div><div class="metric-label">FPGA Latency</div></div>
+          <div class="metric-card"><div class="metric-value" style="color:#6B7280;">1.43 s</div><div class="metric-label">Software Exec</div></div>
+          <div class="metric-card" style="border-color:rgba(0,240,255,0.18);"><div class="metric-value" style="color:#00F0FF;">638×</div><div class="metric-label" style="color:#00F0FF;">Speedup</div></div>
+          <div class="metric-card" style="border-color:rgba(16,185,129,0.18);"><div class="metric-value" style="color:#10B981;">+15.29 dB</div><div class="metric-label" style="color:#10B981;">SNR Improvement</div></div>
+          <div class="metric-card"><div class="metric-value">8.17%</div><div class="metric-label">DSP Utilization</div></div>
+          <div class="metric-card"><div class="metric-value">3.201 W</div><div class="metric-label">On-Chip Power</div></div>
+        </div>
+
+        <!-- Algorithm Comparison Table -->
+        <div class="technical-panel" style="padding:1.5rem;border-color:rgba(255,255,255,0.05);">
+          <div class="font-mono" style="font-size:10px;letter-spacing:0.18em;color:#4B5563;text-transform:uppercase;margin-bottom:1.25rem;">Algorithm Comparison (MATLAB Simulation)</div>
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:10px;">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.07);">
+                  <th style="text-align:left;padding:8px 12px;color:#4B5563;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;">Algorithm</th>
+                  <th style="text-align:right;padding:8px 12px;color:#4B5563;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;">SNR (Raw)</th>
+                  <th style="text-align:right;padding:8px 12px;color:#4B5563;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;">SNR (GA)</th>
+                  <th style="text-align:right;padding:8px 12px;color:#4B5563;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;">SNR (PSO)</th>
+                  <th style="text-align:right;padding:8px 12px;color:#4B5563;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;">Convergence</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                  <td style="padding:8px 12px;color:#9CA3AF;">LMS</td>
+                  <td style="padding:8px 12px;color:#6B7280;text-align:right;">6.17 dB</td>
+                  <td style="padding:8px 12px;color:#6B7280;text-align:right;">14.01 dB</td>
+                  <td style="padding:8px 12px;color:#6B7280;text-align:right;">15.28 dB</td>
+                  <td style="padding:8px 12px;color:#6B7280;text-align:right;">520 iter</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                  <td style="padding:8px 12px;color:#9CA3AF;">NLMS</td>
+                  <td style="padding:8px 12px;color:#6B7280;text-align:right;">6.73 dB</td>
+                  <td style="padding:8px 12px;color:#6B7280;text-align:right;">14.13 dB</td>
+                  <td style="padding:8px 12px;color:#6B7280;text-align:right;">21.34 dB</td>
+                  <td style="padding:8px 12px;color:#6B7280;text-align:right;">310 iter</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px;color:#00F0FF;">RLS ✓</td>
+                  <td style="padding:8px 12px;color:#9CA3AF;text-align:right;">7.73 dB</td>
+                  <td style="padding:8px 12px;color:#9CA3AF;text-align:right;">20.57 dB</td>
+                  <td style="padding:8px 12px;color:#10B981;text-align:right;">23.70 dB</td>
+                  <td style="padding:8px 12px;color:#9CA3AF;text-align:right;">&lt;95 iter</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Resource Utilization -->
+        <div class="technical-panel" style="padding:1.5rem;border-color:rgba(255,255,255,0.05);margin-top:1.5rem;">
+          <div class="font-mono" style="font-size:10px;letter-spacing:0.18em;color:#4B5563;text-transform:uppercase;margin-bottom:1.25rem;">FPGA Resource Utilization</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span class="font-mono" style="font-size:9px;color:#6B7280;">CLB LUTs</span>
+                <span class="font-mono" style="font-size:9px;color:#9CA3AF;">3,811 / 117,120 — 3.25%</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.07);height:3px;border-radius:2px;"><div style="width:3.25%;height:100%;background:#00F0FF;border-radius:2px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span class="font-mono" style="font-size:9px;color:#6B7280;">DSP Slices</span>
+                <span class="font-mono" style="font-size:9px;color:#9CA3AF;">102 / 1,248 — 8.17%</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.07);height:3px;border-radius:2px;"><div style="width:8.17%;height:100%;background:#A855F7;border-radius:2px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span class="font-mono" style="font-size:9px;color:#6B7280;">CLB Registers</span>
+                <span class="font-mono" style="font-size:9px;color:#9CA3AF;">1,609 / 234,240 — 0.69%</span>
+              </div>
+              <div style="background:rgba(255,255,255,0.07);height:3px;border-radius:2px;"><div style="width:0.69%;height:100%;background:#38BDF8;border-radius:2px;"></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>

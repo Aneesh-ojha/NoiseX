@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoiseX — Intelligent Noise Suppression</title>
+
+  <!-- External Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Application Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <!-- Theme & Client Configuration -->
+  <script src="js/config.js"></script>
+</head>
+<body class="bg-deep text-gray-200 antialiased flex flex-col min-h-screen">
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="fixed w-full z-50 bg-deep/80 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-14 items-center">
+
+        <!-- Brand -->
+        <a href="#/" class="font-display font-bold text-[11px] tracking-[0.25em] text-gray-500 hover:text-white transition-colors uppercase">
+          NOISE X
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex space-x-5 text-[11px] font-medium tracking-wider">
+          <a href="#/"            class="nav-link text-gray-500 hover:text-white transition-colors uppercase">Home</a>
+          <a href="#/solution"    class="nav-link text-gray-500 hover:text-white transition-colors uppercase">Our Solution</a>
+          <a href="#/technology"  class="nav-link text-gray-500 hover:text-white transition-colors uppercase">Technology</a>
+          <a href="#/architecture"class="nav-link text-gray-500 hover:text-white transition-colors uppercase">Architecture</a>
+          <a href="#/audio-lab"   class="nav-link text-gray-500 hover:text-cyan-500 transition-colors uppercase font-semibold">Audio Lab</a>
+          <a href="#/results"     class="nav-link text-gray-500 hover:text-white transition-colors uppercase">Results</a>
+          <a href="#/applications"class="nav-link text-gray-500 hover:text-white transition-colors uppercase">Applications</a>
+          <a href="#/team"        class="nav-link text-gray-500 hover:text-white transition-colors uppercase">Team</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+          <button id="mobile-menu-btn" class="text-gray-500 hover:text-white p-1">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile Nav -->
+    <div id="mobile-nav" class="hidden md:hidden bg-surface border-b border-white/5 pb-4 px-5 pt-3 space-y-3 text-xs">
+      <a href="#/"            class="block text-gray-400 hover:text-white uppercase tracking-wider">Home</a>
+      <a href="#/solution"    class="block text-gray-400 hover:text-white uppercase tracking-wider">Our Solution</a>
+      <a href="#/technology"  class="block text-gray-400 hover:text-white uppercase tracking-wider">Technology</a>
+      <a href="#/architecture"class="block text-gray-400 hover:text-white uppercase tracking-wider">Architecture</a>
+      <a href="#/audio-lab"   class="block text-gray-400 hover:text-cyan-500 uppercase tracking-wider font-semibold">Audio Lab</a>
+      <a href="#/results"     class="block text-gray-400 hover:text-white uppercase tracking-wider">Results</a>
+      <a href="#/applications"class="block text-gray-400 hover:text-white uppercase tracking-wider">Applications</a>
+      <a href="#/team"        class="block text-gray-400 hover:text-white uppercase tracking-wider">Team</a>
+    </div>
+  </nav>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="flex-grow">
+
+    <!-- ============================================================
+         HOME PAGE
+         ============================================================ -->
+    <section id="view-home" class="view-section active">
+</section>
+
+
+    <!-- ============================================================
+         OUR SOLUTION
+         ============================================================ -->
+    <section id="view-solution" class="view-section" style="padding:6rem 0 8rem;">
+</section>
+
+
+    <!-- ============================================================
+         TECHNOLOGY
+         ============================================================ -->
+    <section id="view-technology" class="view-section" style="padding:6rem 0 8rem;">
+</section>
+
+
+    <!-- ============================================================
+         SYSTEM ARCHITECTURE
+         ============================================================ -->
+    <section id="view-architecture" class="view-section" style="padding:6rem 0 8rem;">
+</section>
+
+
+    <!-- ============================================================
+         AUDIO LAB
+         ============================================================ -->
+    <section id="view-audio-lab" class="view-section" style="padding:4rem 0 6rem;">
+</section>
+
+
+    <!-- ============================================================
+         RESULTS
+         ============================================================ -->
+    <section id="view-results" class="view-section" style="padding:6rem 0 8rem;">
+</section>
+
+
+    <!-- ============================================================
+         APPLICATIONS
+         ============================================================ -->
+    <section id="view-applications" class="view-section" style="padding:6rem 0 8rem;">
+</section>
+
+
+    <!-- ============================================================
+         TEAM
+         ============================================================ -->
+    <section id="view-team" class="view-section" style="padding:6rem 0 8rem;">
+</section>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
