@@ -131,12 +131,14 @@ def process_audio():
         # -----------------------------------------------------
 
         stage1_audio = spectral_subtract(
-            raw_audio,
-            sr=sr,
-            alpha=2.0,
-            beta=0.005,
-            noise_frames=20
-        )
+    raw_audio,
+    sr=sr,
+    n_fft=1024,
+    hop_length=256,
+    alpha=2.2,
+    beta=0.008,
+    noise_duration=0.2
+)
 
         stage1_audio = np.asarray(
             stage1_audio,
@@ -156,11 +158,11 @@ def process_audio():
         # -----------------------------------------------------
 
         enhanced_audio = wavelet_denoise(
-            stage1_audio,
-            wavelet="db4",
-            level=3,
-            threshold_mode="soft"
-        )
+    stage1_audio,
+         wavelet="db10",
+         level=9,
+        threshold_mode="soft"
+    )
 
         enhanced_audio = np.asarray(
             enhanced_audio,
