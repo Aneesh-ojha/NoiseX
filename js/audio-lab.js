@@ -214,7 +214,7 @@ export class AudioLab {
       const result = this._backendOnline ? await this._callBackend() : await this._runBrowserDSP();
       this.enhancedBuffer = result.buffer;
       // Populate minimal ML summary if backend/browser provided classification
-      try { if (result.classification) this._setML(result.classification, result.confidence); } catch (e) { /* ignore */ }
+      try { if (result.classification) this._setML(result.classification, result.confidence, result.dspParams); } catch (e) { /* ignore */ }
       this.waveOriginal.render(this.originalBuffer, '#4B5563');
       this.waveEnhanced.render(this.enhancedBuffer, '#00F0FF');
       this.specOriginal.render(this.originalBuffer, false);
@@ -263,7 +263,7 @@ export class AudioLab {
     const bytes = Uint8Array.from(atob(json.enhanced_wav_b64), c => c.charCodeAt(0));
     const buf   = await this.audioContext.decodeAudioData(bytes.buffer);
     [2,3,4,5,6].forEach(n => this._markStep(n, 'done'));
-    return { buffer: buf, classification: json.classification, confidence: json.confidence,
+    return { buffer: buf, classification: json.classification, confidence: json.confidence, dspParams: json.dsp_parameters_used,
              metrics: { snrImprovement: json.snr_improvement, rmsReduction: json.rms_reduction, crestFactor: json.crest_factor } };
   }
 
@@ -353,13 +353,24 @@ export class AudioLab {
       : '';
   }
 
-  _setML(category, confidence) {
+  _setML(category, confidence, dspParams) {
     try {
       const el = document.getElementById('ml-summary');
       if (!el) return;
       const cat = document.getElementById('ml-category'); if (cat) cat.textContent = category || 'Unknown';
       const bar = document.getElementById('ml-confidence-bar'); if (bar) bar.style.width = ((confidence||0)*100).toFixed(1) + '%';
       const txt = document.getElementById('ml-confidence-text'); if (txt) txt.textContent = ((confidence||0)*100).toFixed(1) + '% confidence';
+
+      if (dspParams) {
+        const dspBox = document.getElementById('ml-dsp-params');
+        const bW = document.getElementById('dsp-badge-wavelet');
+        const bA = document.getElementById('dsp-badge-alpha');
+        const bB = document.getElementById('dsp-badge-beta');
+        if (dspBox) dspBox.style.display = 'flex';
+        if (bW) bW.textContent = 'Wavelet: ' + (dspParams.wavelet || 'db4').toUpperCase() + ' (L' + (dspParams.level || 4) + ', ' + (dspParams.threshold_mode || 'soft') + ')';
+        if (bA) bA.textContent = 'Spectral α: ' + (dspParams.spectral_alpha !== undefined ? dspParams.spectral_alpha : '—');
+        if (bB) bB.textContent = 'Spectral β: ' + (dspParams.spectral_beta !== undefined ? dspParams.spectral_beta : '—');
+      }
       el.style.display = 'block';
     } catch (err) {
       // ignore
