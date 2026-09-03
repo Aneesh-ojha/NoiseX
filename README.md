@@ -9,61 +9,37 @@
 
 The codebase is organized into modular components for frontend UI, signal processing engines, canvas visualizers, and backend microservices:
 
-```
-SIH/
-├── README.md                   # Complete architectural guide & codebase map
-├── index.html                  # Main SPA HTML structure (8 interactive view sections)
-├── serve.sh                    # Simple local web server (Python http.server on port 8000)
-│
-├── assets/                     # Static media & reference audio files
-│   ├── logo.png                # Tactical brand asset (screen blended)
-│   └── audio/                  # Reference tactical battlefield WAV recordings
-│       ├── drone_combat.wav
-│       ├── emergency_siren.wav
-│       ├── gunfire_impulsive.wav
-│       ├── heavy_engine.wav
-│       ├── helicopter_cockpit.wav
-│       └── wind_shear.wav
-│
-├── css/                        # Modular Cascading Style Sheets
-│   ├── styles.css              # Core design system tokens, typography, grid backgrounds
-│   └── components.css          # UI component styles (metric cards, checklists, status badges, player)
-│
-├── js/                         # Frontend Application JavaScript
-│   ├── app.js                  # Main application bootstrapper & lifecycle init
-│   ├── config.js               # Client theme configuration & constants
-│   │
-│   ├── core/                   # DSP & Machine Learning engines
-│   │   ├── dsp-engine.js       # In-browser STFT + Spectral Subtraction + Wavelet soft-thresholding
-│   │   └── audio-classifier.js # Temporal/spectral feature extraction & threat vector classification
-│   │
-│   ├── visualizers/            # HTML5 Canvas real-time audio renderers
-│   │   ├── spectrogram.js      # True STFT magnitude spectrogram renderer (Magma colormap)
-│   │   └── waveform.js         # Interactive time-domain waveform visualizer
-│   │
-│   ├── controllers/            # UI state managers & event routers
-│   │   ├── audio-lab.js        # Audio Lab controller (upload, decode, pipeline orchestration, playback)
-│   │   └── router.js           # Hash-based SPA routing & scroll-reveal intersection observers
-│   │
-│   └── data/                   # Grounded benchmark data & threat vector catalog
-│       └── benchmark-data.js   # Real Xilinx FPGA hardware benchmarks & acoustic threat matrix
-│
-└── backend/                    # Python DSP & Machine Learning Service
-    ├── app.py                  # Flask REST API server exposing /health and /api/process-audio
-    ├── requirements.txt        # Python package dependencies
-    ├── run.sh                  # Backend launcher script
-    │
-    ├── audio/                  # Audio I/O utilities
-    │   └── preprocessing.py    # Resampling, mono downmix, peak normalization, metadata calculation
-    │
-    ├── dsp/                    # Scientific signal processing algorithms
-    │   ├── stft.py             # Forward and inverse STFT using scipy.signal
-    │   ├── spectral_subtraction.py # Over-subtraction stationary noise filter
-    │   └── wavelet.py          # Multi-level DWT VisuShrink soft thresholding (PyWavelets)
-    │
-    └── ml/                     # Machine learning classification
-        └── classifier.py       # Feature extraction (RMS, peak, crest factor, ZCR, kurtosis) & threat detection
-```
+`graph TD
+    classDef root fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#f8fafc;
+    classDef client fill:#0f172a,stroke:#06b6d4,stroke-width:1.5px,color:#f8fafc;
+    classDef backend fill:#0f172a,stroke:#8b5cf6,stroke-width:1.5px,color:#f8fafc;
+    classDef file fill:#1e1e2e,stroke:#475569,stroke-width:1px,color:#94a3b8;
+
+    subgraph SIH["SIH Project Root"]
+        R1["index.html<br/>SPA Shell"]:::file
+        R2["serve.sh<br/>Port 8000 Server"]:::file
+        R3["README.md<br/>Documentation"]:::file
+
+        subgraph ASSETS["assets/"]
+            A1["logo.png"]:::file
+            A2["audio/<br/>6 Tactical Reference WAVs"]:::file
+        end
+
+        subgraph FRONTEND["Frontend Architecture"]
+            CSS["css/<br/>styles.css & components.css"]:::file
+            J1["js/core/<br/>dsp-engine.js<br/>audio-classifier.js"]:::client
+            J2["js/visualizers/<br/>spectrogram.js<br/>waveform.js"]:::client
+            J3["js/controllers/<br/>audio-lab.js<br/>router.js"]:::client
+            J4["js/data/<br/>benchmark-data.js"]:::file
+        end
+
+        subgraph BACKEND["Python DSP Backend"]
+            B1["app.py<br/>Flask REST API"]:::backend
+            B2["audio/<br/>preprocessing.py"]:::backend
+            B3["dsp/<br/>stft.py<br/>spectral_subtraction.py<br/>wavelet.py"]:::backend
+            B4["ml/<br/>classifier.py"]:::backend
+        end
+    end
 
 ---
 
