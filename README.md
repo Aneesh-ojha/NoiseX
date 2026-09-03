@@ -72,27 +72,28 @@ SIH/
 ### 1. Dual-Engine Processing Pipeline
 ```mermaid
 flowchart TD
-    A[User Audio File Upload / Preset] --> B[AudioLab Controller]
-    B --> C{Backend Online?}
+    A["User Audio File Upload / Preset"] --> B["AudioLab Controller"]
+    B --> C{"Backend Online?"}
     
-    C -- Yes (Port 5000) --> D[Python REST API /api/process-audio]
-    D --> E[Resampling & Normalization]
-    E --> F[ML Threat Classification]
-    F --> G[Spectral Subtraction STFT]
-    G --> H[Wavelet Soft Thresholding DWT]
-    H --> I[Base64 WAV + Metrics]
+    C -->|"Yes (Port 5000)"| D["Python REST API /api/process-audio"]
+    D --> E["Resampling & Normalization"]
+    E --> F["ML Threat Classification"]
+    F --> G["Spectral Subtraction STFT"]
+    G --> H["Wavelet Soft Thresholding DWT"]
+    H --> I["Base64 WAV + Metrics"]
     
-    C -- No (Browser Fallback) --> J[Browser DSP Engine]
-    J --> K[Cooley-Tukey Radix-2 FFT]
-    K --> L[In-Browser Spectral Subtraction]
-    L --> M[Dyadic Wavelet Approximation]
-    M --> N[Synthesized AudioBuffer + Metrics]
+    C -->|"No (Browser Fallback)"| J["Browser DSP Engine"]
+    J --> K["Cooley-Tukey Radix-2 FFT"]
+    K --> L["In-Browser Spectral Subtraction"]
+    L --> M["Dyadic Wavelet Approximation"]
+    M --> N["Synthesized AudioBuffer + Metrics"]
     
-    I --> O[Visualizers & Metrics UI]
-    N --> O[Visualizers & Metrics UI]
-    O --> P[STFT Spectrogram Canvas]
-    O --> Q[Waveform Canvas]
-    O --> R[Audio Playback & WAV Export]
+    I --> O["Visualizers & Metrics UI"]
+    N --> O
+    
+    O --> P["STFT Spectrogram Canvas"]
+    O --> Q["Waveform Canvas"]
+    O --> R["Audio Playback & WAV Export"]
 ```
 
 ### 2. Signal Processing Steps
