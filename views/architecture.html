@@ -1,71 +1,369 @@
-<div style="max-width:960px;margin:0 auto;padding:0 1.5rem;">
+<div style="max-width:1300px;margin:0 auto;padding:0 1.5rem 3.5rem;">
 
-        <div style="text-align:center;margin-bottom:3rem;">
-          <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:1rem;">Hardware Platform</p>
-          <h2 class="font-display" style="font-size:2.25rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">System Architecture</h2>
-          <p class="font-mono" style="font-size:11px;color:#00F0FF;letter-spacing:0.1em;">
-            PYNQ-ZU <span style="color:#4B5563;">(Zynq UltraScale+ MPSoC based platform)</span>
-          </p>
-        </div>
-
-        <!-- ASCII Architecture Diagram -->
-        <div class="technical-panel" style="padding:3rem 2rem;border-color:rgba(255,255,255,0.05);background:rgba(14,17,23,0.6);overflow-x:auto;">
-          <pre class="font-mono" style="font-size:11px;color:#6B7280;line-height:1.7;text-align:center;white-space:pre;">
-          MICROPHONE INPUT (ADAU1761 · 24-bit / 96 kHz)
-                         ↓
-             AXI4-Stream DMA Interface
-                         ↓
-          ┌──────────────────────────────────┐
-          │        PROGRAMMABLE LOGIC         │
-          │          (PL Fabric)              │
-          │                                   │
-          │  ┌─────────────────────────────┐  │
-          │  │    SIGNAL PREPROCESSING     │  │
-          │  │  Decimation · Framing · FFT │  │
-          │  └──────────────┬──────────────┘  │
-          │                 ↓                 │
-          │  ┌─────────────────────────────┐  │
-          │  │      DSP ACCELERATOR        │  │
-          │  │  Spectral Subtraction       │  │
-          │  │  Wavelet Thresholding       │  │
-          │  │  RLS Adaptive Filter        │  │
-          │  └──────────────┬──────────────┘  │
-          └─────────────────┼─────────────────┘
-                            ↓
-          ┌──────────────────────────────────┐
-          │         ARM Cortex-A53           │
-          │    (Python / ML Classifier)       │
-          │  Noise Classification → Params   │
-          └──────────────────┬───────────────┘
-                             ↓
-             AXI4-Stream DMA → ADAU1761
-                             ↓
-            SPEAKER OUTPUT — Enhanced Speech
-          </pre>
-        </div>
-
-        <!-- Key metrics strip -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-top:2rem;">
-          <div class="metric-card">
-            <div class="metric-value">2.24 ms</div>
-            <div class="metric-label">FPGA Latency</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value">638×</div>
-            <div class="metric-label" style="color:#00F0FF;">Speedup vs Software</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value">100 MHz</div>
-            <div class="metric-label">PL Clock</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value">8.17%</div>
-            <div class="metric-label">DSP Slice Usage</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value">3.201 W</div>
-            <div class="metric-label">Total On-Chip Power</div>
-          </div>
-        </div>
-
+  <!-- Header & Console Bar -->
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:1.5rem;">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#00F0FF;box-shadow:0 0 8px #00F0FF;"></span>
+        <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#00F0FF;text-transform:uppercase;margin:0;">Target: Xilinx Zynq-7000 (PYNQ-Z2)</p>
       </div>
+      <h2 class="font-display" style="font-size:1.85rem;font-weight:700;color:#F3F4F6;letter-spacing:0.06em;text-transform:uppercase;margin:0 0 4px 0;">Heterogeneous SoC Architecture</h2>
+      <p style="color:#6B7280;font-size:0.85rem;margin:0;">Hardware-Accelerated Real-Time Audio DSP Fabric + ARM Supervisory Machine Learning Plane</p>
+    </div>
+
+    <!-- Active telemetry badge -->
+    <div style="display:flex;gap:12px;">
+      <div class="technical-panel" style="padding:8px 14px;background:#090B10;border-color:rgba(0,240,255,0.2);">
+        <div class="font-mono" style="font-size:8px;color:#6B7280;text-transform:uppercase;">Data Clock (PL)</div>
+        <div class="font-mono" style="font-size:13px;color:#00F0FF;font-weight:700;">100.00 MHz</div>
+      </div>
+      <div class="technical-panel" style="padding:8px 14px;background:#090B10;border-color:rgba(168,85,247,0.2);">
+        <div class="font-mono" style="font-size:8px;color:#6B7280;text-transform:uppercase;">Supervisory Bus</div>
+        <div class="font-mono" style="font-size:13px;color:#A855F7;font-weight:700;">AXI4-Lite 32b</div>
+      </div>
+      <div class="technical-panel" style="padding:8px 14px;background:#090B10;border-color:rgba(16,185,129,0.2);">
+        <div class="font-mono" style="font-size:8px;color:#6B7280;text-transform:uppercase;">Audio Latency</div>
+        <div class="font-mono" style="font-size:13px;color:#10B981;font-weight:700;">&lt; 5.33 ms</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main System Layout: Interactive Diagram + Telemetry Inspector -->
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start;">
+
+    <!-- Left: Interactive Canvas -->
+    <div style="background:#090B10;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:1.5rem;box-shadow:0 20px 40px rgba(0,0,0,0.6);position:relative;overflow:hidden;">
+
+      <!-- Grid Overlay -->
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);background-size:24px 24px;pointer-events:none;"></div>
+
+      <svg viewBox="0 0 880 720" width="100%" height="100%" style="font-family:'JetBrains Mono', monospace, sans-serif;display:block;position:relative;z-index:2;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <style>
+            .node-box { cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+            .node-box:hover rect.base { stroke-width: 2px !important; filter: brightness(1.25); }
+            .bus-pulse { stroke-dasharray: 6 6; animation: dash 1s linear infinite; }
+            .bus-pulse-fast { stroke-dasharray: 4 4; animation: dash 0.5s linear infinite; }
+            .pulse-purple { stroke-dasharray: 5 5; animation: dash-rev 1.2s linear infinite; }
+            @keyframes dash { to { stroke-dashoffset: -12; } }
+            @keyframes dash-rev { to { stroke-dashoffset: 10; } }
+          </style>
+
+          <linearGradient id="plGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0E1726" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#070A10" stop-opacity="0.98"/>
+          </linearGradient>
+          <linearGradient id="psGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#181126" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#0B0716" stop-opacity="0.98"/>
+          </linearGradient>
+
+          <marker id="arrowCyan" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0.5, 6 3.5, 0 6.5" fill="#00F0FF"/>
+          </marker>
+          <marker id="arrowPurple" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0.5, 6 3.5, 0 6.5" fill="#C084FC"/>
+          </marker>
+          <marker id="arrowGreen" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0.5, 6 3.5, 0 6.5" fill="#10B981"/>
+          </marker>
+        </defs>
+
+        <!-- Subsystem Containers -->
+        <!-- PL Fabric Area -->
+        <rect x="30" y="90" width="510" height="520" rx="8" fill="url(#plGrad)" stroke="rgba(0,240,255,0.25)" stroke-width="1.2"/>
+        <rect x="30" y="90" width="510" height="26" rx="8" fill="rgba(0,240,255,0.06)"/>
+        <text x="45" y="107" fill="#00F0FF" font-size="9" font-weight="700" letter-spacing="1.5">PROGRAMMABLE LOGIC (PL / FPGA FABRIC)</text>
+
+        <!-- PS Area -->
+        <rect x="570" y="90" width="280" height="520" rx="8" fill="url(#psGrad)" stroke="rgba(168,85,247,0.3)" stroke-width="1.2"/>
+        <rect x="570" y="90" width="280" height="26" rx="8" fill="rgba(168,85,247,0.08)"/>
+        <text x="585" y="107" fill="#C084FC" font-size="9" font-weight="700" letter-spacing="1.5">PROCESSING SYSTEM (PS / CORTEX-A9)</text>
+
+        <!-- Audio Frontends -->
+        <!-- MIC Node -->
+        <g class="node-box" onclick="inspectNode('mic')" transform="translate(45, 20)">
+          <rect class="base" width="160" height="46" rx="5" fill="#064E3B" stroke="#10B981" stroke-width="1.4"/>
+          <text x="80" y="21" fill="#A7F3D0" font-size="9.5" font-weight="700" text-anchor="middle">MIC IN (ADAU1761)</text>
+          <text x="80" y="35" fill="#6EE7B7" font-size="7.5" text-anchor="middle">24-bit I2S @ 48 kHz</text>
+        </g>
+
+        <!-- Bus: MIC -> I2S Controller -->
+        <path d="M 125 66 L 125 130" stroke="#10B981" stroke-width="2" class="bus-pulse-fast" marker-end="url(#arrowGreen)" fill="none"/>
+
+        <!-- I2S RX Controller -->
+        <g class="node-box" onclick="inspectNode('i2s_rx')" transform="translate(50, 130)">
+          <rect class="base" width="150" height="46" rx="5" fill="#111827" stroke="#374151" stroke-width="1.2"/>
+          <text x="75" y="20" fill="#E5E7EB" font-size="9" font-weight="600" text-anchor="middle">I2S Receiver &amp; CDC</text>
+          <text x="75" y="34" fill="#9CA3AF" font-size="7.5" text-anchor="middle">Dual-Clock Asynch FIFO</text>
+        </g>
+
+        <!-- Bus: I2S RX -> Framing -->
+        <path d="M 200 153 L 260 153" stroke="#00F0FF" stroke-width="2" class="bus-pulse" marker-end="url(#arrowCyan)" fill="none"/>
+
+        <!-- STFT Framing Core -->
+        <g class="node-box" onclick="inspectNode('framing')" transform="translate(265, 130)">
+          <rect class="base" width="250" height="46" rx="5" fill="#111827" stroke="#38BDF8" stroke-width="1.2"/>
+          <text x="125" y="20" fill="#F0F9FF" font-size="9.5" font-weight="600" text-anchor="middle">Framing &amp; Hann Windowing</text>
+          <text x="125" y="34" fill="#7DD3FC" font-size="7.5" text-anchor="middle">1024-pt Frame / 256 Hop (75%)</text>
+        </g>
+
+        <!-- Bus: Framing -> FFT -->
+        <path d="M 390 176 L 390 215" stroke="#00F0FF" stroke-width="2" class="bus-pulse" marker-end="url(#arrowCyan)" fill="none"/>
+
+        <!-- FFT Core -->
+        <g class="node-box" onclick="inspectNode('fft')" transform="translate(265, 215)">
+          <rect class="base" width="250" height="48" rx="5" fill="#1E293B" stroke="#00F0FF" stroke-width="1.4"/>
+          <text x="125" y="21" fill="#E0F2FE" font-size="10" font-weight="700" text-anchor="middle">Xilinx FFT LogiCORE v9.1</text>
+          <text x="125" y="36" fill="#38BDF8" font-size="7.5" text-anchor="middle">Radix-4 Burst I/O · 24-bit Complex</text>
+        </g>
+
+        <!-- Bus: FFT -> Spectral Subtraction -->
+        <path d="M 390 263 L 390 305" stroke="#00F0FF" stroke-width="2" class="bus-pulse" marker-end="url(#arrowCyan)" fill="none"/>
+
+        <!-- Spectral Subtraction Block -->
+        <g class="node-box" onclick="inspectNode('specsub')" transform="translate(265, 305)">
+          <rect class="base" width="250" height="52" rx="5" fill="#0F172A" stroke="#00F0FF" stroke-width="1.6"/>
+          <text x="125" y="22" fill="#E0F2FE" font-size="10" font-weight="700" text-anchor="middle">Spectral Subtraction Core</text>
+          <text x="125" y="38" fill="#38BDF8" font-size="8" text-anchor="middle">|X(f)| - α·N(f) with β Floor</text>
+        </g>
+
+        <!-- Bus: SpecSub -> Wavelet -->
+        <path d="M 390 357 L 390 400" stroke="#00F0FF" stroke-width="2" class="bus-pulse" marker-end="url(#arrowCyan)" fill="none"/>
+
+        <!-- Wavelet Core -->
+        <g class="node-box" onclick="inspectNode('wavelet')" transform="translate(265, 400)">
+          <rect class="base" width="250" height="52" rx="5" fill="#0F172A" stroke="#00F0FF" stroke-width="1.6"/>
+          <text x="125" y="22" fill="#E0F2FE" font-size="10" font-weight="700" text-anchor="middle">Multi-Level DWT Core (db10)</text>
+          <text x="125" y="38" fill="#38BDF8" font-size="8" text-anchor="middle">VisuShrink Soft Threshold (λ)</text>
+        </g>
+
+        <!-- Bus: Wavelet -> Reconstruction -->
+        <path d="M 390 452 L 390 495" stroke="#00F0FF" stroke-width="2" class="bus-pulse" marker-end="url(#arrowCyan)" fill="none"/>
+
+        <!-- Reconstruction Core -->
+        <g class="node-box" onclick="inspectNode('recon')" transform="translate(265, 495)">
+          <rect class="base" width="250" height="46" rx="5" fill="#111827" stroke="#38BDF8" stroke-width="1.2"/>
+          <text x="125" y="20" fill="#F0F9FF" font-size="9.5" font-weight="600" text-anchor="middle">IDWT / ISTFT Reconstruction</text>
+          <text x="125" y="34" fill="#7DD3FC" font-size="7.5" text-anchor="middle">Overlap-Add PCM Synthesis</text>
+        </g>
+
+        <!-- Bus: Recon -> I2S TX -->
+        <path d="M 265 518 L 200 518" stroke="#00F0FF" stroke-width="2" class="bus-pulse" marker-end="url(#arrowCyan)" fill="none"/>
+
+        <!-- I2S TX -->
+        <g class="node-box" onclick="inspectNode('i2s_tx')" transform="translate(50, 495)">
+          <rect class="base" width="150" height="46" rx="5" fill="#111827" stroke="#374151" stroke-width="1.2"/>
+          <text x="75" y="20" fill="#E5E7EB" font-size="9" font-weight="600" text-anchor="middle">I2S Transmitter</text>
+          <text x="75" y="34" fill="#9CA3AF" font-size="7.5" text-anchor="middle">DAC Serialization Stream</text>
+        </g>
+
+        <!-- Bus: I2S TX -> Headset -->
+        <path d="M 125 541 L 125 640" stroke="#10B981" stroke-width="2" class="bus-pulse-fast" marker-end="url(#arrowGreen)" fill="none"/>
+
+        <!-- DAC Headset Sink -->
+        <g class="node-box" onclick="inspectNode('dac')" transform="translate(45, 640)">
+          <rect class="base" width="160" height="46" rx="5" fill="#064E3B" stroke="#10B981" stroke-width="1.4"/>
+          <text x="80" y="21" fill="#A7F3D0" font-size="9.5" font-weight="700" text-anchor="middle">DAC / HEADSET OUT</text>
+          <text x="80" y="35" fill="#6EE7B7" font-size="7.5" text-anchor="middle">Enhanced Clean Speech</text>
+        </g>
+
+        <!-- PS SIDE (ARM Cortex Components) -->
+        <!-- Feature Ingest DMA -->
+        <g class="node-box" onclick="inspectNode('ps_ingest')" transform="translate(590, 140)">
+          <rect class="base" width="240" height="52" rx="5" fill="#1F1338" stroke="#A855F7" stroke-width="1.2"/>
+          <text x="120" y="20" fill="#F3E8FF" font-size="9.5" font-weight="600" text-anchor="middle">DMA Spectral Buffer Ingest</text>
+          <text x="120" y="35" fill="#D8B4FE" font-size="7.5" text-anchor="middle">AXI-HP Ring Buffer (Non-blocking)</text>
+        </g>
+
+        <!-- Bus: FFT -> PS Ingest -->
+        <path d="M 515 239 L 550 239 L 550 166 L 590 166" stroke="#38BDF8" stroke-width="1.6" class="bus-pulse" marker-end="url(#arrowCyan)" fill="none"/>
+
+        <!-- ML Feature Extractor -->
+        <g class="node-box" onclick="inspectNode('ml_feat')" transform="translate(590, 235)">
+          <rect class="base" width="240" height="52" rx="5" fill="#1F1338" stroke="#A855F7" stroke-width="1.2"/>
+          <text x="120" y="20" fill="#F3E8FF" font-size="9.5" font-weight="600" text-anchor="middle">Feature Extraction Vector</text>
+          <text x="120" y="35" fill="#D8B4FE" font-size="7.5" text-anchor="middle">RMS, Centroid, ZCR, Flux</text>
+        </g>
+
+        <path d="M 710 192 L 710 235" stroke="#A855F7" stroke-width="1.8" class="pulse-purple" marker-end="url(#arrowPurple)" fill="none"/>
+
+        <!-- Random Forest Classifier -->
+        <g class="node-box" onclick="inspectNode('rf_model')" transform="translate(590, 330)">
+          <rect class="base" width="240" height="60" rx="5" fill="#2E1065" stroke="#C084FC" stroke-width="1.6"/>
+          <text x="120" y="22" fill="#FAF5FF" font-size="10" font-weight="700" text-anchor="middle">ML Threat Classifier</text>
+          <text x="120" y="38" fill="#E9D5FF" font-size="8" text-anchor="middle">Random Forest (100 Estimators)</text>
+          <text x="120" y="50" fill="#A855F7" font-size="7.5" text-anchor="middle">Output: Jet / Blast / Rotor / Siren</text>
+        </g>
+
+        <path d="M 710 287 L 710 330" stroke="#A855F7" stroke-width="1.8" class="pulse-purple" marker-end="url(#arrowPurple)" fill="none"/>
+
+        <!-- Empirical LUT Policy Engine -->
+        <g class="node-box" onclick="inspectNode('lut_engine')" transform="translate(590, 435)">
+          <rect class="base" width="240" height="64" rx="5" fill="#291E05" stroke="#EAB308" stroke-width="1.5"/>
+          <text x="120" y="22" fill="#FEF08A" font-size="10" font-weight="700" text-anchor="middle">Empirical Policy LUT</text>
+          <text x="120" y="38" fill="#FDE047" font-size="8" text-anchor="middle">Trained ArgMax(PESQ, STOI)</text>
+          <text x="120" y="52" fill="#CA8A04" font-size="7.5" text-anchor="middle">Registers: α, β, λ, Wavelet Filter</text>
+        </g>
+
+        <path d="M 710 390 L 710 435" stroke="#A855F7" stroke-width="1.8" class="pulse-purple" marker-end="url(#arrowPurple)" fill="none"/>
+
+        <!-- AXI-Lite Writes back to PL -->
+        <!-- To SpecSub -->
+        <path d="M 590 455 L 535 455 L 535 331 L 515 331" stroke="#C084FC" stroke-width="1.6" class="pulse-purple" marker-end="url(#arrowPurple)" fill="none"/>
+
+        <!-- To Wavelet -->
+        <path d="M 590 475 L 525 475 L 525 426 L 515 426" stroke="#C084FC" stroke-width="1.6" class="pulse-purple" marker-end="url(#arrowPurple)" fill="none"/>
+      </svg>
+    </div>
+
+    <!-- Right: Telemetry & Inspector Panel -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <!-- Live Inspector Box -->
+      <div class="technical-panel" style="padding:1.5rem;background:#090B10;border-color:rgba(0,240,255,0.2);">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:8px;">
+          <span class="font-mono" style="font-size:9px;color:#00F0FF;letter-spacing:0.18em;text-transform:uppercase;">Block Inspector</span>
+          <span id="inspect-status" class="font-mono" style="font-size:9px;color:#10B981;">ONLINE</span>
+        </div>
+
+        <h3 id="inspect-title" class="font-display" style="font-size:1.15rem;font-weight:700;color:#F3F4F6;margin:0 0 6px 0;">Spectral Subtraction Core</h3>
+        <p id="inspect-desc" style="font-size:11px;color:#9CA3AF;line-height:1.5;margin-bottom:1rem;">
+          Executes frequency-domain magnitude over-subtraction with a dynamic spectral floor to suppress persistent acoustic power without musical noise artifacts.
+        </p>
+
+        <!-- Dynamic Specs Table -->
+        <div style="display:flex;flex-direction:column;gap:8px;" id="inspect-specs">
+          <div style="display:flex;justify-content:space-between;">
+            <span class="font-mono" style="font-size:9px;color:#6B7280;text-transform:uppercase;">Execution Domain</span>
+            <span class="font-mono" style="font-size:10px;color:#00F0FF;">PL (FPGA Fabric)</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span class="font-mono" style="font-size:9px;color:#6B7280;text-transform:uppercase;">Throughput</span>
+            <span class="font-mono" style="font-size:10px;color:#E5E7EB;">1 Sample / Cycle</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span class="font-mono" style="font-size:9px;color:#6B7280;text-transform:uppercase;">Control Interface</span>
+            <span class="font-mono" style="font-size:10px;color:#A855F7;">AXI4-Lite RegMap</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span class="font-mono" style="font-size:9px;color:#6B7280;text-transform:uppercase;">Hardware Footprint</span>
+            <span class="font-mono" style="font-size:10px;color:#E5E7EB;">12 DSP48 · 4 BRAM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Legend & Bus Architecture -->
+      <div class="technical-panel" style="padding:1.25rem;background:#090B10;border-color:rgba(255,255,255,0.06);">
+        <div class="font-mono" style="font-size:9px;color:#6B7280;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">Bus Topology</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:18px;height:3px;background:#00F0FF;border-radius:2px;"></div>
+            <div style="font-size:10px;color:#9CA3AF;"><strong style="color:#F3F4F6;">AXI4-Stream</strong>: 24-bit audio line-rate pipeline</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:18px;height:3px;background:#A855F7;border-radius:2px;"></div>
+            <div style="font-size:10px;color:#9CA3AF;"><strong style="color:#C084FC;">AXI4-Lite</strong>: Supervisory parameter registers (α, β, λ)</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:18px;height:3px;background:#10B981;border-radius:2px;"></div>
+            <div style="font-size:10px;color:#9CA3AF;"><strong style="color:#A7F3D0;">I2S Interconnect</strong>: ADAU1761 48 kHz stereo codec</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:18px;height:3px;background:#EAB308;border-radius:2px;"></div>
+            <div style="font-size:10px;color:#9CA3AF;"><strong style="color:#FEF08A;">Empirical LUT</strong>: Offline PESQ / STOI Optima</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Interactive Inspector Logic -->
+<script>
+  const telemetryData = {
+    fft: {
+      title: "Xilinx FFT LogiCORE v9.1",
+      desc: "Computes a real-time 1024-point complex STFT using Radix-4 Burst I/O architecture with 75% overlap Hann windowing.",
+      domain: "PL (FPGA Fabric)",
+      tput: "Pipeliend Streaming",
+      ctrl: "AXI4-Stream Slave / Master",
+      footprint: "24 DSP48E1 · 8 BRAM (36Kb)"
+    },
+    specsub: {
+      title: "Spectral Subtraction Core",
+      desc: "Applies magnitude attenuation against estimated background noise power spectrum with adaptive spectral flooring.",
+      domain: "PL (FPGA Fabric)",
+      tput: "1 Sample / Cycle",
+      ctrl: "AXI4-Lite (Alpha / Beta)",
+      footprint: "12 DSP48E1 · 4 BRAM"
+    },
+    wavelet: {
+      title: "Multi-Level DWT Engine",
+      desc: "Decomposes residual spectrum using Daubechies (db10) wavelets and executes VisuShrink soft thresholding to preserve transient speech.",
+      domain: "PL (FPGA Fabric)",
+      tput: "Sub-band Parallel",
+      ctrl: "AXI4-Lite (Lambda Threshold)",
+      footprint: "36 DSP48E1 · 12 BRAM"
+    },
+    rf_model: {
+      title: "Random Forest Threat Classifier",
+      desc: "Ensemble of 100 decision trees evaluating 16 acoustic features to classify threat signatures (Jet, Blast, Drone, Ambient) in 4.8ms.",
+      domain: "PS (ARM Cortex-A9)",
+      tput: "200 Inferences / sec",
+      ctrl: "Scikit-Learn / C++ Port",
+      footprint: "140 KB Model Memory"
+    },
+    lut_engine: {
+      title: "Empirical Policy LUT Engine",
+      desc: "Pre-calibrated policy matrix derived from extensive offline PESQ/STOI optimization. Maps predicted noise classes to verified DSP filter parameters.",
+      domain: "PS (Supervisory Plane)",
+      tput: "Instantaneous Map (<10μs)",
+      ctrl: "Memory-Mapped Registers",
+      footprint: "4 KB Memory Map"
+    },
+    mic: {
+      title: "Analog Audio Ingest (ADAU1761)",
+      desc: "High-performance 24-bit stereo audio codec operating at 48 kHz sampling with integrated low-noise microphone pre-amplification.",
+      domain: "Analog / I2S Frontend",
+      tput: "48 kHz @ 24-bit PCM",
+      ctrl: "I2C Configuration Bus",
+      footprint: "Dedicated Hardware IC"
+    },
+    dac: {
+      title: "Analog Audio Sink (Headset)",
+      desc: "Capless stereo headphone driver outputting enhanced speech with full dynamic range preservation.",
+      domain: "Analog Output",
+      tput: "48 kHz @ 24-bit PCM",
+      ctrl: "I2S Serial Bus",
+      footprint: "Dedicated Hardware IC"
+    }
+  };
+
+  function inspectNode(key) {
+    const data = telemetryData[key];
+    if (!data) return;
+    document.getElementById("inspect-title").innerText = data.title;
+    document.getElementById("inspect-desc").innerText = data.desc;
+    document.getElementById("inspect-specs").innerHTML = `
+      <div style="display:flex;justify-content:space-between;">
+        <span class="font-mono" style="font-size:9px;color:#6B7280;text-transform:uppercase;">Execution Domain</span>
+        <span class="font-mono" style="font-size:10px;color:#00F0FF;">${data.domain}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <span class="font-mono" style="font-size:9px;color:#6B7280;text-transform:uppercase;">Throughput</span>
+        <span class="font-mono" style="font-size:10px;color:#E5E7EB;">${data.tput}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <span class="font-mono" style="font-size:9px;color:#6B7280;text-transform:uppercase;">Control Interface</span>
+        <span class="font-mono" style="font-size:10px;color:#A855F7;">${data.ctrl}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <span class="font-mono" style="font-size:9px;color:#6B7280;text-transform:uppercase;">Hardware Footprint</span>
+        <span class="font-mono" style="font-size:10px;color:#E5E7EB;">${data.footprint}</span>
+      </div>
+    `;
+  }
+</script>

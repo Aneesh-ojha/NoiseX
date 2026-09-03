@@ -69,14 +69,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!activeView.innerHTML.trim()) {
       try {
         const response = await fetch(`views/${route}.html`);
-        if (response.ok) {
+          if (response.ok) {
           activeView.innerHTML = await response.text();
-          
-          // If we just loaded the audio lab, initialize it
-          if (route === 'audio-lab' && !window.audioLab) {
-            window.audioLab = new AudioLab();
+
+          // If we just loaded the audio lab, initialize or re-initialize it
+          if (route === 'audio-lab') {
+            try {
+              // Re-create the controller to ensure event listeners bind to the newly injected DOM
+              window.audioLab = new AudioLab();
+            } catch (err) {
+              console.error('Failed to initialize AudioLab:', err);
+            }
           }
-          
+
           // Re-create lucide icons for newly injected HTML
           if (window.lucide) {
             window.lucide.createIcons();
@@ -92,10 +97,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     activeView.classList.add('active');
 
+    // Safety: if the view content is unexpectedly empty after loading, provide a retry message
+    if (!activeView.innerHTML.trim()) {
+      console.warn(`View ${route} is empty after load — inserting fallback message.`);
+      activeView.innerHTML = `<div style="padding: 4rem; text-align: center; color: #EF4444;">Content failed to load. <button id=\"retry-load\" style=\"margin-left:12px;padding:6px 10px;\">Retry</button></div>`;
+      const btn = activeView.querySelector('#retry-load');
+      if (btn) btn.addEventListener('click', () => handleRoute());
+    }
+
     // Re-initialize scroll reveal after view switch
     requestAnimationFrame(() => {
       initScrollReveal();
     });
+
+    // Ensure AudioLab bindings whenever the audio-lab view becomes active
+    if (route === 'audio-lab') {
+      try {
+        if (window.audioLab && typeof window.audioLab._bindDOM === 'function') {
+          window.audioLab._bindDOM();
+        } else if (!window.audioLab) {
+          window.audioLab = new AudioLab();
+        }
+      } catch (err) {
+        console.error('AudioLab bind error:', err);
+      }
+    }
 
     // Highlight active nav link
     document.querySelectorAll('.nav-link, #mobile-nav a').forEach(el => {

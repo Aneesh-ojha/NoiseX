@@ -1,65 +1,65 @@
 <div style="max-width:960px;margin:0 auto;padding:0 1.5rem;">
 
-        <div style="text-align:center;margin-bottom:4rem;">
-          <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:1rem;">Stack</p>
-          <h2 class="font-display" style="font-size:2.25rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;">Technology</h2>
-        </div>
+  <div style="text-align:center;margin-bottom:4rem;">
+    <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:1rem;">Stack</p>
+    <h2 class="font-display" style="font-size:2.25rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;">Technology</h2>
+  </div>
 
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;">
 
-          <div class="technical-panel" style="padding:2rem;">
-            <div class="font-mono" style="font-size:10px;color:#A855F7;margin-bottom:0.75rem;letter-spacing:0.15em;">01 — ML</div>
-            <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Machine Learning</h3>
-            <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-              Feature extraction (ZCR, RMS, crest factor, kurtosis) combined with a heuristic classifier
-              identifies the noise environment category to guide DSP parameter selection.
-            </p>
-          </div>
+    <!-- ML Classification -->
+    <div class="technical-panel" style="padding:2rem;">
+      <div class="font-mono" style="font-size:10px;color:#A855F7;margin-bottom:0.75rem;letter-spacing:0.15em;">ML</div>
+      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Acoustic Classification</h3>
+      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
+        Feature extraction (ZCR, RMS energy, crest factor, kurtosis) identifies background threats like rotor wash, gunfire, or broadband noise to dynamically guide DSP parameters.
+      </p>
+    </div>
 
-          <div class="technical-panel" style="padding:2rem;">
-            <div class="font-mono" style="font-size:10px;color:#00F0FF;margin-bottom:0.75rem;letter-spacing:0.15em;">02 — STFT</div>
-            <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Spectral Subtraction</h3>
-            <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-              Short-Time Fourier Transform converts each audio frame into the frequency domain.
-              A noise floor estimate is subtracted from the magnitude spectrum, then the signal is reconstructed via ISTFT.
-            </p>
-          </div>
+    <!-- Spectral Subtraction -->
+    <div class="technical-panel" style="padding:2rem;">
+      <div class="font-mono" style="font-size:10px;color:#00F0FF;margin-bottom:0.75rem;letter-spacing:0.15em;">STFT</div>
+      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Spectral Subtraction</h3>
+      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
+        Short-Time Fourier Transform decomposes input frames into magnitude and phase spectra. Over-subtraction with a spectral floor suppresses continuous periodic noise while avoiding phase collapse.
+      </p>
+    </div>
 
-          <div class="technical-panel" style="padding:2rem;">
-            <div class="font-mono" style="font-size:10px;color:#60A5FA;margin-bottom:0.75rem;letter-spacing:0.15em;">03 — Wavelet</div>
-            <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Wavelet Processing</h3>
-            <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-              Multi-resolution decomposition separates signal components at different time-frequency scales.
-              Soft thresholding suppresses transient and broadband noise while preserving speech formants.
-            </p>
-          </div>
+    <!-- Wavelet Denoising -->
+    <div class="technical-panel" style="padding:2rem;">
+      <div class="font-mono" style="font-size:10px;color:#60A5FA;margin-bottom:0.75rem;letter-spacing:0.15em;">DWT</div>
+      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Wavelet Denoising</h3>
+      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
+        Multi-resolution Discrete Wavelet Transform isolates high-frequency transient spikes. Soft subband thresholding eliminates impulsive artifacts without creating robotic distortion.
+      </p>
+    </div>
 
-          <div class="technical-panel" style="padding:2rem;">
-            <div class="font-mono" style="font-size:10px;color:#10B981;margin-bottom:0.75rem;letter-spacing:0.15em;">04 — HW</div>
-            <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">PYNQ-ZU Hardware</h3>
-            <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-              The pipeline is hardware-accelerated on the PYNQ-ZU (Zynq UltraScale+ MPSoC based platform)
-              FPGA fabric via AXI4-Stream DMA, achieving 2.24 ms latency — a 638× speedup over pure software.
-            </p>
-          </div>
+    <!-- Hardware Acceleration -->
+    <div class="technical-panel" style="padding:2rem;">
+      <div class="font-mono" style="font-size:10px;color:#10B981;margin-bottom:0.75rem;letter-spacing:0.15em;">HW</div>
+      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">PYNQ-Z2 Acceleration</h3>
+      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
+        Offloaded to the Xilinx Zynq-7000 (PYNQ-Z2) platform using high-throughput AXI4-Stream DMA, achieving 2.24 ms latency — a 638× speedup over pure software execution.
+      </p>
+    </div>
 
-          <div class="technical-panel" style="padding:2rem;">
-            <div class="font-mono" style="font-size:10px;color:#F97316;margin-bottom:0.75rem;letter-spacing:0.15em;">05 — RLS</div>
-            <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Adaptive Filtering</h3>
-            <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-              Recursive Least Squares (RLS) adaptive filtering provides rapid convergence (&lt;95 iterations)
-              and the highest SNR gain among evaluated algorithms (23.70 dB with PSO-optimized coefficients).
-            </p>
-          </div>
+    <!-- Dual-Domain Synthesis -->
+    <div class="technical-panel" style="padding:2rem;">
+      <div class="font-mono" style="font-size:10px;color:#F97316;margin-bottom:0.75rem;letter-spacing:0.15em;">SYNTHESIS</div>
+      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Cascaded Synthesis</h3>
+      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
+        Sequential reconstruction couples spectral noise reduction with wavelet detail cleanup, ensuring speech envelope integrity and formant preservation.
+      </p>
+    </div>
 
-          <div class="technical-panel" style="padding:2rem;">
-            <div class="font-mono" style="font-size:10px;color:#EAB308;margin-bottom:0.75rem;letter-spacing:0.15em;">06 — Audio</div>
-            <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Audio Codec</h3>
-            <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-              ADAU1761 SigmaDSP (24-bit / 96 kHz) provides analog I/O. AXI DMA bridges the codec
-              to the programmable logic for zero-copy high-throughput audio streaming.
-            </p>
-          </div>
+    <!-- Audio Codec -->
+    <div class="technical-panel" style="padding:2rem;">
+      <div class="font-mono" style="font-size:10px;color:#EAB308;margin-bottom:0.75rem;letter-spacing:0.15em;">AUDIO</div>
+      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">High-Speed Codec</h3>
+      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
+        ADAU1761 SigmaDSP provides 24-bit / 48 kHz analog I/O. AXI DMA connects the codec directly to programmable logic for zero-copy, real-time streaming.
+      </p>
+    </div>
 
-        </div>
-      </div>
+  </div>
+</div>

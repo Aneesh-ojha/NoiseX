@@ -1,4 +1,8 @@
-<div style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
+<!-- ============================================================
+         AUDIO LAB
+         ============================================================ -->
+    <section id="view-audio-lab" class="view-section active" style="padding:4rem 0 6rem;">
+      <div style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
 
         <!-- Header -->
         <div style="text-align:center;margin-bottom:2.5rem;">
@@ -52,13 +56,9 @@
                   <span id="meta-channels" class="font-mono" style="font-size:10px;color:#9CA3AF;">—</span>
                 </div>
                 <div style="display:flex;justify-content:space-between;">
-                  <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">Peak dBFS</span>
-                  <span id="meta-peak" class="font-mono" style="font-size:10px;color:#9CA3AF;">—</span>
+                  <!-- Peak dBFS removed per UI update -->
                 </div>
-                <div style="display:flex;justify-content:space-between;">
-                  <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">RMS Level</span>
-                  <span id="meta-rms" class="font-mono" style="font-size:10px;color:#9CA3AF;">—</span>
-                </div>
+                <!-- RMS Level removed per UI update -->
               </div>
             </div>
 
@@ -69,31 +69,18 @@
               Analyze Audio
             </button>
 
-            <!-- Processing Timeline -->
+            <!-- Pipeline Checklist (No numbers) -->
             <div id="processing-timeline" class="technical-panel" style="padding:1.25rem;border-color:rgba(255,255,255,0.05);display:none;">
-              <div class="font-mono" style="font-size:9px;letter-spacing:0.15em;color:#4B5563;text-transform:uppercase;margin-bottom:12px;">Pipeline</div>
+              <div class="font-mono" style="font-size:9px;letter-spacing:0.15em;color:#4B5563;text-transform:uppercase;margin-bottom:12px;">Pipeline Stages</div>
               <div style="display:flex;flex-direction:column;gap:8px;" id="checklist">
-                <div class="checklist-item" id="step-1"><div class="step-box"></div><span>1. Audio Decode</span></div>
-                <div class="checklist-item" id="step-2"><div class="step-box"></div><span>2. Preprocess / Resample</span></div>
-                <div class="checklist-item" id="step-3"><div class="step-box"></div><span>3. Feature Extraction</span></div>
-                <div class="checklist-item" id="step-4"><div class="step-box"></div><span>4. ML Classification</span></div>
-                <div class="checklist-item" id="step-5"><div class="step-box"></div><span>5. Spectral Subtraction</span></div>
-                <div class="checklist-item" id="step-6"><div class="step-box"></div><span>6. Wavelet Denoising</span></div>
-                <div class="checklist-item" id="step-7"><div class="step-box"></div><span>7. Reconstruction</span></div>
+                <div class="checklist-item" id="step-1"><div class="step-box"></div><span>Audio Decode</span></div>
+                <div class="checklist-item" id="step-2"><div class="step-box"></div><span>Spectral Subtraction</span></div>
+                <div class="checklist-item" id="step-3"><div class="step-box"></div><span>Wavelet Denoising</span></div>
+                <div class="checklist-item" id="step-4"><div class="step-box"></div><span>Output Synthesis</span></div>
               </div>
             </div>
 
-            <!-- ML Classification Result -->
-            <div id="ml-result-panel" class="technical-panel" style="padding:1.25rem;border-color:rgba(168,85,247,0.2);display:none;">
-              <div class="font-mono" style="font-size:9px;letter-spacing:0.15em;color:#A855F7;text-transform:uppercase;margin-bottom:12px;">ML Classification</div>
-              <div class="font-mono" style="font-size:12px;color:#F3F4F6;margin-bottom:10px;" id="noise-category">—</div>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <div class="confidence-bar-track" style="flex:1;">
-                  <div class="confidence-bar-fill" id="noise-confidence"></div>
-                </div>
-                <span class="font-mono" style="font-size:10px;color:#6B7280;min-width:36px;text-align:right;" id="noise-confidence-text">0%</span>
-              </div>
-            </div>
+            <!-- ML Classification panel removed per user request -->
 
             <!-- Error Panel -->
             <div id="error-panel" class="error-panel" style="display:none;">
@@ -110,13 +97,8 @@
           <!-- RIGHT — Visualization -->
           <div id="lab-results" style="display:none;flex-direction:column;gap:1.25rem;">
 
-            <!-- Metrics Row -->
-            <div id="metrics-panel" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
-              <div class="metric-card" style="border-color:rgba(16,185,129,0.2);">
-                <div class="metric-value" style="color:#10B981;" id="metric-snr">—</div>
-                <div class="metric-label" style="color:#10B981;">SNR Improvement</div>
-                <div class="font-mono" style="font-size:8px;color:#374151;margin-top:4px;">Relative estimate</div>
-              </div>
+            <!-- Metrics Row (RMS Reduction & Crest Factor Only) -->
+            <div id="metrics-panel" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
               <div class="metric-card">
                 <div class="metric-value" id="metric-rms">—</div>
                 <div class="metric-label">RMS Reduction</div>
@@ -124,6 +106,22 @@
               <div class="metric-card">
                 <div class="metric-value" id="metric-crest">—</div>
                 <div class="metric-label">Crest Factor</div>
+              </div>
+            </div>
+
+            <!-- Minimal ML Summary (category + confidence) -->
+            <div id="ml-summary" style="display:none;margin-top:12px;">
+              <div class="technical-panel" style="padding:12px;display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div class="font-mono" style="font-size:10px;color:#A855F7;">ML Environment</div>
+                  <div id="ml-category" class="font-mono" style="font-size:12px;color:#F3F4F6;">—</div>
+                </div>
+                <div>
+                  <div style="background:rgba(255,255,255,0.06);height:8px;border-radius:6px;overflow:hidden;">
+                    <div id="ml-confidence-bar" style="height:100%;width:0%;background:#A855F7;transition:width 0.3s ease;"></div>
+                  </div>
+                  <div id="ml-confidence-text" class="font-mono" style="font-size:9px;color:#9CA3AF;margin-top:6px;">—</div>
+                </div>
               </div>
             </div>
 
@@ -198,13 +196,6 @@
 
           </div>
 
-          <!-- Mobile: stack columns -->
-          <style>
-            @media(max-width:768px){
-              #view-audio-lab > div > div:first-child { grid-template-columns: 1fr !important; }
-              #view-audio-lab > div > div:first-child > div:first-child { min-width:0; }
-            }
-          </style>
-
         </div>
       </div>
+    </section>

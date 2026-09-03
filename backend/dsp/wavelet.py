@@ -1,37 +1,43 @@
-"""
-dsp/wavelet.py
-Colab-matched Wavelet Denoising.
-"""
-
 import numpy as np
 import pywt
 
 def wavelet_denoise(
     audio: np.ndarray,
-    wavelet: str = "db10",
+    wavelet: str = 'db4',
     level: int = 9,
-    threshold_mode: str = "soft",
+    threshold_method: str = 'universal',
+    mode: str = 'soft'
 ) -> np.ndarray:
     audio = audio.astype(np.float32)
-    coeffs = pywt.wavedec(audio, wavelet, level=level)
+    orig_len = len(audio)
 
-    # Noise estimation from finest detail coefficients
+    # Limit decomposition level to what signal length allows
+    max_level = pywt.dwt_max_level(orig_len, pywt.Wavelet(wavelet).dec_len)
+    actual_level = min(level, max(1, max_level))
+
+    # Perform Discrete Wavelet Transform
+    coeffs = pywt.wavedec(audio, wavelet, level=actual_level)
+
+    # Noise standard deviation from finest detail coefficients
     sigma = np.median(np.abs(coeffs[-1])) / 0.6745
-    threshold = sigma * np.sqrt(2 * np.log(len(audio)))
 
-    # Soft thresholding on detail coefficients
+    # If the band is silent, avoid division/zeroing errors
+    if sigma < 1e-9:
+        return audio
+
+    # Preserve approximation coefficients
     thresholded_coeffs = [coeffs[0]]
+
+    # Universal thresholding on detail coefficients
     for i in range(1, len(coeffs)):
-        thresholded_coeffs.append(
-            pywt.threshold(coeffs[i], value=threshold, mode=threshold_mode)
-        )
+        threshold = sigma * np.sqrt(2 * np.log(orig_len))
+        thresholded_coeffs.append(pywt.threshold(coeffs[i], value=threshold, mode=mode))
 
-    # IDWT reconstruction
-    denoised = pywt.waverec(thresholded_coeffs, wavelet)
+    # Perform IDWT
+    denoised_audio = pywt.waverec(thresholded_coeffs, wavelet)
 
-    if len(denoised) > len(audio):
-        denoised = denoised[:len(audio)]
-    elif len(denoised) < len(audio):
-        denoised = np.pad(denoised, (0, len(audio) - len(denoised)), "constant")
-
-    return denoised.astype(np.float32)
+    # Match length
+    if len(denoised_audio) >= orig_len:
+        return denoised_audio[:orig_len].astype(np.float32)
+    else:
+        return np.pad(denoised_audio, (0, orig_len - len(denoised_audio)), 'constant').astype(np.float32)

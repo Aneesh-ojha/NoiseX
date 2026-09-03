@@ -1,53 +1,58 @@
-"""
-dsp/spectral_subtraction.py
-Colab-matched Spectral Subtraction.
-"""
-
 import numpy as np
-import scipy.signal as signal
+from scipy.signal import stft, istft
 
 def spectral_subtract(
     audio: np.ndarray,
     sr: int,
-    n_fft: int = 1024,
-    hop_length: int = 256,
+    frame_size: int = 1024,
+    hop_size: int = 256,
     alpha: float = 2.2,
     beta: float = 0.008,
-    noise_duration: float = 0.2,
+    noise_estimation_duration: float = 0.2,
 ) -> np.ndarray:
+    # Ensure float32
     audio = audio.astype(np.float32)
 
-    # Frame-based noise segment count matching Colab
-    noise_frames = max(1, int(noise_duration * sr) // hop_length)
+    # Calculate noise frames based on duration
+    noise_frames = int(noise_estimation_duration * sr) // hop_size
+    if noise_frames == 0:
+        noise_frames = 1
 
-    # STFT
-    _, _, Zxx = signal.stft(
+    # Generate spectrogram
+    f, t, Zxx = stft(
         audio,
         fs=sr,
-        nperseg=n_fft,
-        noverlap=n_fft - hop_length,
-        boundary=None,
+        nperseg=frame_size,
+        noverlap=frame_size - hop_size,
+        boundary=None
     )
 
-    magnitude = np.abs(Zxx)
-    phase = np.angle(Zxx)
+    magnitude_spectrum = np.abs(Zxx)
+    phase_spectrum = np.angle(Zxx)
 
-    # Noise spectrum estimation
-    noise_mag = np.mean(magnitude[:, :noise_frames], axis=1, keepdims=True)
+    # Estimate noise magnitude spectrum from first frames
+    noise_magnitude_spectrum = np.mean(magnitude_spectrum[:, :noise_frames], axis=1, keepdims=True)
 
-    # Over-subtraction with spectral floor
-    denoised_mag = np.maximum(
-        magnitude - alpha * noise_mag,
-        beta * magnitude,
-    )
+    # Subtract noise
+    denoised_magnitude_spectrum = magnitude_spectrum - (alpha * noise_magnitude_spectrum)
 
-    # ISTFT
-    denoised_Zxx = denoised_mag * np.exp(1j * phase)
-    _, enhanced = signal.istft(
+    # Spectral floor
+    denoised_magnitude_spectrum = np.maximum(denoised_magnitude_spectrum, beta * magnitude_spectrum)
+
+    # Reconstruct complex spectrogram
+    denoised_Zxx = denoised_magnitude_spectrum * np.exp(1j * phase_spectrum)
+
+    # Inverse STFT
+    _, denoised_audio = istft(
         denoised_Zxx,
         fs=sr,
-        nperseg=n_fft,
-        noverlap=n_fft - hop_length,
+        nperseg=frame_size,
+        noverlap=frame_size - hop_size
     )
 
-    return enhanced[:len(audio)].astype(np.float32)
+    # Match original length exactly
+    orig_len = len(audio)
+    if len(denoised_audio) >= orig_len:
+        return denoised_audio[:orig_len].astype(np.float32)
+    else:
+        return np.pad(denoised_audio, (0, orig_len - len(denoised_audio)), 'constant').astype(np.float32)

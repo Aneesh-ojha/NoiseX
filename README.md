@@ -1,7 +1,7 @@
 # NoiseX — Intelligent Noise Suppression & Tactical DSP Suite
 
-> **Aerospace & Defence Grade Adaptive Audio Processing Engine**  
-> Accelerated on AMD Xilinx Zynq UltraScale+ FPGA with in-browser and Python DSP fallbacks.
+> **Aerospace & Defence Grade Audio Processing Engine**  
+> Accelerated on Xilinx Zynq-7000 (PYNQ-Z2) with in-browser and Python DSP fallbacks.
 
 ---
 
@@ -133,4 +133,4 @@ Open **http://localhost:8000** in your browser. All audio processing will run di
 ## 🧪 Verification & Testing
 - **Preset Testing**: Navigate to `#/audio-lab` and test presets or upload custom audio.
 - **Visualizations**: Both the waveform canvas and STFT spectrogram reflect exact mathematical transformations of the audio buffer.
-- **Hardware Benchmarks**: View `#/results` and `#/architecture` to inspect AMD Xilinx Zynq UltraScale+ hardware utilization, power analysis, and latency metrics.
+- **Hardware Benchmarks**: View `#/architecture` to inspect Xilinx Zynq-7000 (PYNQ-Z2) hardware utilization, power analysis, and latency metrics.

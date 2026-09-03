@@ -22,13 +22,86 @@ export class AudioLab {
     this._playingOriginal = null;
     this._playingEnhanced = null;
 
+    // DOM refs will be (re)bound when the view is active
+    this.uploadZone  = null;
+    this.fileInput   = null;
+    this.analyzeBtn  = null;
+    this.downloadBtn = null;
+
+    // Store handler references so we can remove/rebind safely
+    this._handlers = {};
+
+    this._checkBackend();
+    this._bindDOM();
+  }
+
+  // Re-query important DOM nodes and (re)attach event listeners safely.
+  _bindDOM() {
+    // Query elements
     this.uploadZone  = document.getElementById('upload-zone');
     this.fileInput   = document.getElementById('file-input');
     this.analyzeBtn  = document.getElementById('btn-analyze');
     this.downloadBtn = document.getElementById('btn-download');
 
-    this._initEventListeners();
-    this._checkBackend();
+    // Remove previous listeners if present
+    this._removeListeners();
+
+    // Attach new listeners and keep references
+    if (this.fileInput) {
+      this._handlers.fileChange = e => { if (e.target.files[0]) this._handleFile(e.target.files[0]); };
+      this.fileInput.addEventListener('change', this._handlers.fileChange);
+    }
+
+    if (this.uploadZone) {
+      this._handlers.dragOver = e => { e.preventDefault(); this.uploadZone.style.borderColor = '#00F0FF'; };
+      this._handlers.dragLeave = () => { if (this.uploadZone) this.uploadZone.style.borderColor = ''; };
+      this._handlers.drop = e => { e.preventDefault(); if (this.uploadZone) this.uploadZone.style.borderColor = ''; if (e.dataTransfer.files[0]) this._handleFile(e.dataTransfer.files[0]); };
+      this.uploadZone.addEventListener('dragover', this._handlers.dragOver);
+      this.uploadZone.addEventListener('dragleave', this._handlers.dragLeave);
+      this.uploadZone.addEventListener('drop', this._handlers.drop);
+    }
+
+    if (this.analyzeBtn) {
+      this._handlers.analyzeClick = () => this._runPipeline();
+      this.analyzeBtn.addEventListener('click', this._handlers.analyzeClick);
+    }
+
+    if (this.downloadBtn) {
+      this._handlers.downloadClick = () => this._download();
+      this.downloadBtn.addEventListener('click', this._handlers.downloadClick);
+    }
+
+    // Playback buttons
+    const pO = document.getElementById('play-original');
+    const pE = document.getElementById('play-enhanced');
+    if (pO) {
+      this._handlers.playOriginal = () => this._togglePlay('original');
+      pO.addEventListener('click', this._handlers.playOriginal);
+    }
+    if (pE) {
+      this._handlers.playEnhanced = () => this._togglePlay('enhanced');
+      pE.addEventListener('click', this._handlers.playEnhanced);
+    }
+  }
+
+  _removeListeners() {
+    try {
+      if (this.fileInput && this._handlers.fileChange) this.fileInput.removeEventListener('change', this._handlers.fileChange);
+      if (this.uploadZone) {
+        if (this._handlers.dragOver) this.uploadZone.removeEventListener('dragover', this._handlers.dragOver);
+        if (this._handlers.dragLeave) this.uploadZone.removeEventListener('dragleave', this._handlers.dragLeave);
+        if (this._handlers.drop) this.uploadZone.removeEventListener('drop', this._handlers.drop);
+      }
+      if (this.analyzeBtn && this._handlers.analyzeClick) this.analyzeBtn.removeEventListener('click', this._handlers.analyzeClick);
+      if (this.downloadBtn && this._handlers.downloadClick) this.downloadBtn.removeEventListener('click', this._handlers.downloadClick);
+      const pO = document.getElementById('play-original');
+      const pE = document.getElementById('play-enhanced');
+      if (pO && this._handlers.playOriginal) pO.removeEventListener('click', this._handlers.playOriginal);
+      if (pE && this._handlers.playEnhanced) pE.removeEventListener('click', this._handlers.playEnhanced);
+    } catch (err) {
+      // ignore
+    }
+    this._handlers = {};
   }
 
   _ensureAudioContext() {
@@ -87,6 +160,8 @@ export class AudioLab {
     try {
       this.originalFile   = file;
       this.originalBuffer = await this.audioContext.decodeAudioData(ab);
+      // Ensure classifier knows the current sample rate
+      if (this.classifier) this.classifier.sampleRate = this.originalBuffer.sampleRate || this.classifier.sampleRate;
       this._updateMetaUI(file.name, this.originalBuffer);
       this._initVisualizers();
       this.waveOriginal.render(this.originalBuffer, '#4B5563');
@@ -117,8 +192,8 @@ export class AudioLab {
     set('meta-duration',   buf.duration.toFixed(2) + ' s');
     set('meta-samplerate', buf.sampleRate + ' Hz');
     set('meta-channels',   buf.numberOfChannels);
-    set('meta-peak',       (20 * Math.log10(pk + 1e-10)).toFixed(1) + ' dBFS');
-    set('meta-rms',        (20 * Math.log10(rms + 1e-10)).toFixed(1) + ' dBFS');
+    // Peak and RMS metadata removed from UI; keep values in memory if needed.
+    // (Previously updated elements 'meta-peak' and 'meta-rms')
   }
 
   async _runPipeline() {
@@ -138,8 +213,8 @@ export class AudioLab {
     try {
       const result = this._backendOnline ? await this._callBackend() : await this._runBrowserDSP();
       this.enhancedBuffer = result.buffer;
-
-      this._setML(result.classification, result.confidence);
+      // Populate minimal ML summary if backend/browser provided classification
+      try { if (result.classification) this._setML(result.classification, result.confidence); } catch (e) { /* ignore */ }
       this.waveOriginal.render(this.originalBuffer, '#4B5563');
       this.waveEnhanced.render(this.enhancedBuffer, '#00F0FF');
       this.specOriginal.render(this.originalBuffer, false);
@@ -160,7 +235,9 @@ export class AudioLab {
   async _runBrowserDSP() {
     this._markStep(2, 'done');
     const f = this.classifier.extractFeatures(this.originalBuffer.getChannelData(0));
+    console.debug('[AudioLab] ML features:', f);
     const ml = this.classifier.classify(f);
+    console.debug('[AudioLab] ML classify:', ml);
     this._markStep(3, 'done');
     this._markStep(4, 'done');
     this._markStep(5, 'running');
@@ -277,11 +354,16 @@ export class AudioLab {
   }
 
   _setML(category, confidence) {
-    const ml = document.getElementById('ml-result-panel');
-    if (ml) ml.style.display = 'block';
-    const c = document.getElementById('noise-category');    if (c) c.textContent = category || 'Unknown';
-    const b = document.getElementById('noise-confidence'); if (b) b.style.width = ((confidence||0)*100).toFixed(1)+'%';
-    const t = document.getElementById('noise-confidence-text'); if (t) t.textContent = ((confidence||0)*100).toFixed(1)+'%';
+    try {
+      const el = document.getElementById('ml-summary');
+      if (!el) return;
+      const cat = document.getElementById('ml-category'); if (cat) cat.textContent = category || 'Unknown';
+      const bar = document.getElementById('ml-confidence-bar'); if (bar) bar.style.width = ((confidence||0)*100).toFixed(1) + '%';
+      const txt = document.getElementById('ml-confidence-text'); if (txt) txt.textContent = ((confidence||0)*100).toFixed(1) + '% confidence';
+      el.style.display = 'block';
+    } catch (err) {
+      // ignore
+    }
   }
 
   _updateMetrics(m) {
