@@ -7,39 +7,106 @@
 
 ## 📁 Repository Structure & Directory Map
 
-The codebase is organized into modular components for frontend UI, signal processing engines, canvas visualizers, and backend microservices:
+## 📂 Repository Structure & Directory Map
 
-`graph TD
-    classDef root fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#f8fafc;
-    classDef client fill:#0f172a,stroke:#06b6d4,stroke-width:1.5px,color:#f8fafc;
-    classDef backend fill:#0f172a,stroke:#8b5cf6,stroke-width:1.5px,color:#f8fafc;
-    classDef file fill:#1e1e2e,stroke:#475569,stroke-width:1px,color:#94a3b8;
+The codebase is organized into modular components separating the browser interface, DSP engines, interactive visualizers, and backend ML microservices:
 
-    subgraph SIH["SIH Project Root"]
-        R1["index.html<br/>SPA Shell"]:::file
-        R2["serve.sh<br/>Port 8000 Server"]:::file
-        R3["README.md<br/>Documentation"]:::file
+```text
+SIH/
+├── index.html                     # Main Single Page Application shell
+├── serve.sh                       # Local HTTP runtime runner (port 8000)
+├── README.md                      # System documentation & architectural specs
+│
+├── assets/                        # Static UI assets and verified acoustic clips
+│   ├── logo.png
+│   └── audio/                     # Tactical reference benchmarks (16kHz WAVs)
+│       ├── drone_combat.wav
+│       ├── emergency_siren.wav
+│       ├── gunfire_impulsive.wav
+│       ├── heavy_engine.wav
+│       ├── helicopter_cockpit.wav
+│       └── wind_shear.wav
+│
+├── css/                           # Design system and UI layouts
+│   ├── styles.css                 # Base theme and typography
+│   └── components.css             # Scoped component styles
+│
+├── js/                            # Client-side audio processing & visualizer engine
+│   ├── core/
+│   │   ├── dsp-engine.js          # Web Audio API real-time processing graph
+│   │   └── audio-classifier.js    # Client-side telemetry and dispatch
+│   ├── visualizers/
+│   │   ├── spectrogram.js         # Real-time WebGL/Canvas spectrogram renderer
+│   │   └── waveform.js            # Time-domain waveform renderer
+│   ├── controllers/
+│   │   ├── audio-lab.js           # Audio Lab workflow controller & badge bindings
+│   │   └── router.js              # View switcher and hash navigation
+│   └── data/
+│       └── benchmark-data.js      # Baseline PESQ, STOI, and SNR metrics
+│
+└── backend/                       # Python DSP & Machine Learning Microservice
+    ├── app.py                     # Flask REST API endpoint (/api/process-audio)
+    ├── audio/
+    │   └── preprocessing.py       # Resampling (16kHz), window framing & normalization
+    ├── dsp/
+    │   ├── stft.py                # Short-Time Fourier Transform routines
+    │   ├── spectral_subtraction.py# Adaptive over-subtraction filter
+    │   ├── wavelet.py             # DWT decomposition (db4/db10) & thresholding
+    │   └── metrics.py             # Objective evaluation (SNR, PESQ, STOI)
+    └── ml/
+        ├── classifier.py          # Log-Mel sliding-window inference pipeline
+        └── models/
+            └── acoustic_env_rf.pkl# Trained 6-class Random Forest model## 📂 Repository Structure & Directory Map
 
-        subgraph ASSETS["assets/"]
-            A1["logo.png"]:::file
-            A2["audio/<br/>6 Tactical Reference WAVs"]:::file
-        end
+The codebase is organized into modular components separating the browser interface, DSP engines, interactive visualizers, and backend ML microservices:
 
-        subgraph FRONTEND["Frontend Architecture"]
-            CSS["css/<br/>styles.css & components.css"]:::file
-            J1["js/core/<br/>dsp-engine.js<br/>audio-classifier.js"]:::client
-            J2["js/visualizers/<br/>spectrogram.js<br/>waveform.js"]:::client
-            J3["js/controllers/<br/>audio-lab.js<br/>router.js"]:::client
-            J4["js/data/<br/>benchmark-data.js"]:::file
-        end
+```text
+SIH/
+├── index.html                     # Main Single Page Application shell
+├── serve.sh                       # Local HTTP runtime runner (port 8000)
+├── README.md                      # System documentation & architectural specs
+│
+├── assets/                        # Static UI assets and verified acoustic clips
+│   ├── logo.png
+│   └── audio/                     # Tactical reference benchmarks (16kHz WAVs)
+│       ├── drone_combat.wav
+│       ├── emergency_siren.wav
+│       ├── gunfire_impulsive.wav
+│       ├── heavy_engine.wav
+│       ├── helicopter_cockpit.wav
+│       └── wind_shear.wav
+│
+├── css/                           # Design system and UI layouts
+│   ├── styles.css                 # Base theme and typography
+│   └── components.css             # Scoped component styles
+│
+├── js/                            # Client-side audio processing & visualizer engine
+│   ├── core/
+│   │   ├── dsp-engine.js          # Web Audio API real-time processing graph
+│   │   └── audio-classifier.js    # Client-side telemetry and dispatch
+│   ├── visualizers/
+│   │   ├── spectrogram.js         # Real-time WebGL/Canvas spectrogram renderer
+│   │   └── waveform.js            # Time-domain waveform renderer
+│   ├── controllers/
+│   │   ├── audio-lab.js           # Audio Lab workflow controller & badge bindings
+│   │   └── router.js              # View switcher and hash navigation
+│   └── data/
+│       └── benchmark-data.js      # Baseline PESQ, STOI, and SNR metrics
+│
+└── backend/                       # Python DSP & Machine Learning Microservice
+    ├── app.py                     # Flask REST API endpoint (/api/process-audio)
+    ├── audio/
+    │   └── preprocessing.py       # Resampling (16kHz), window framing & normalization
+    ├── dsp/
+    │   ├── stft.py                # Short-Time Fourier Transform routines
+    │   ├── spectral_subtraction.py# Adaptive over-subtraction filter
+    │   ├── wavelet.py             # DWT decomposition (db4/db10) & thresholding
+    │   └── metrics.py             # Objective evaluation (SNR, PESQ, STOI)
+    └── ml/
+        ├── classifier.py          # Log-Mel sliding-window inference pipeline
+        └── models/
+            └── acoustic_env_rf.pkl# Trained 6-class Random Forest model
 
-        subgraph BACKEND["Python DSP Backend"]
-            B1["app.py<br/>Flask REST API"]:::backend
-            B2["audio/<br/>preprocessing.py"]:::backend
-            B3["dsp/<br/>stft.py<br/>spectral_subtraction.py<br/>wavelet.py"]:::backend
-            B4["ml/<br/>classifier.py"]:::backend
-        end
-    end
 
 ---
 
