@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function initScrollReveal() {
     if (revealObserver) revealObserver.disconnect();
 
-    const targets = document.querySelectorAll('.scroll-reveal');
+    // Only consider reveal targets inside the currently active view
+    const targets = document.querySelectorAll('.view-section.active .scroll-reveal');
     if (!targets.length) return;
 
     revealObserver = new IntersectionObserver((entries) => {
@@ -31,13 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -40px 0px'
+      threshold: 0.05,
+      rootMargin: '50px'
     });
 
     targets.forEach(el => {
-      el.classList.remove('visible');
-      revealObserver.observe(el);
+      // If already in viewport, show immediately; otherwise observe
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight) {
+        el.classList.add('visible');
+      } else {
+        revealObserver.observe(el);
+      }
     });
   }
 
@@ -76,14 +82,32 @@ document.addEventListener('DOMContentLoaded', () => {
           activeView.innerHTML = await response.text();
 
           // If we just loaded the audio lab, initialize or re-initialize it
-          if (route === 'audio-lab') {
-            try {
-              // Re-create the controller to ensure event listeners bind to the newly injected DOM
-              window.audioLab = new AudioLab();
-            } catch (err) {
-              console.error('Failed to initialize AudioLab:', err);
-            }
+          // Ensure AudioLab bindings & canvas recalibration on revisit
+    if (route === 'audio-lab') {
+      try {
+        if (!window.audioLab) {
+          window.audioLab = new AudioLab();
+        } else if (typeof window.audioLab._bindDOM === 'function') {
+          window.audioLab._bindDOM();
+        }
+
+        // Force audio visualizer canvases to recalculate their dimensions
+        requestAnimationFrame(() => {
+          window.dispatchEvent(new Event('resize'));
+
+          // Force all hidden reveal containers in audio-lab to become immediately visible
+          const hiddenElements = activeView.querySelectorAll('.scroll-reveal');
+          hiddenElements.forEach(el => el.classList.add('visible'));
+
+          // If your visualizers expose a draw/render method, kickstart them
+          if (window.audioLab && typeof window.audioLab.renderVisualizers === 'function') {
+            window.audioLab.renderVisualizers();
           }
+        });
+      } catch (err) {
+        console.error('AudioLab re-bind error:', err);
+      }
+    }
 
           // Re-create lucide icons for newly injected HTML
           if (window.lucide) {
@@ -100,13 +124,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     activeView.classList.add('active');
 
+    // Force all elements inside the active view to be visible
+    activeView.querySelectorAll('.scroll-reveal').forEach(el => {
+      el.classList.add('visible');
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+
     // ── Route-Specific Dynamic Hooks ─────────────────────────────
     if (route === 'home') {
-      requestAnimationFrame(() => {
-        initHeroScroll();
-      });
+      requestAnimationFrame(() => { initHeroScroll(); });
     } else if (route === 'team') {
       renderTeam();
+    } else if (route === 'audio-lab') {
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event('resize'));
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      });
     }
     // ─────────────────────────────────────────────────────────────
 
@@ -124,13 +160,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Ensure AudioLab bindings whenever the audio-lab view becomes active
+   // Ensure AudioLab bindings whenever the audio-lab view becomes active
     if (route === 'audio-lab') {
       try {
+        // Prevent 0x0 collapsed canvas & un-hide any stuck scroll-reveal wrappers
+        activeView.style.display = 'block';
+        activeView.querySelectorAll('.scroll-reveal').forEach(el => el.classList.add('visible'));
+
         if (window.audioLab && typeof window.audioLab._bindDOM === 'function') {
           window.audioLab._bindDOM();
-        } else if (!window.audioLab) {
+        } else {
           window.audioLab = new AudioLab();
         }
+
+        // Allow layout paint to complete before triggering redraws & icons
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+          if (window.lucide) {
+            window.lucide.createIcons();
+          }
+        }, 60);
       } catch (err) {
         console.error('AudioLab bind error:', err);
       }
