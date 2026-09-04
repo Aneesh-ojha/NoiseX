@@ -3,6 +3,7 @@ import { AudioLab } from './audio-lab.js';
 import { TEAM_MEMBERS } from './data/team-data.js';
 import { initHeroScroll } from './controllers/hero-scroll.js';
 import { initSolutionHUD } from './controllers/solution-hud.js';
+import { initTechHUD } from './controllers/tech-hud.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Mobile menu toggle
@@ -85,26 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let hash  = window.location.hash || '#/';
     let route = hash.replace(/^#\/?/, '');
     if (route === '') route = 'home';
-    if (route === 'home') {
-      requestAnimationFrame(() => {
-        initHeroScroll();
-        initBoard3D();
-      });
-    } else if (route === 'solution') {
-      requestAnimationFrame(() => {
-        initSolutionHUD();
-        if (window.lucide) window.lucide.createIcons();
-      });
-    } else if (route === 'technology') {
-      requestAnimationFrame(() => {
-        initTechHUD();
-        if (window.lucide) window.lucide.createIcons();
-      });
-    }else if (route === 'team') {
-      renderTeam();
-    } else if (route === 'audio-lab') {
-      activateAudioLab(activeView);
-    }
 
     document.querySelectorAll('.view-section').forEach(el => {
       el.classList.remove('active');
@@ -147,10 +128,21 @@ document.addEventListener('DOMContentLoaded', () => {
       el.style.transform = 'none';
     });
 
+    // Initialize controller for the active view
     if (route === 'home') {
       requestAnimationFrame(() => {
         initHeroScroll();
         initBoard3D();
+      });
+    } else if (route === 'solution') {
+      requestAnimationFrame(() => {
+        initSolutionHUD();
+        if (window.lucide) window.lucide.createIcons();
+      });
+    } else if (route === 'technology') {
+      requestAnimationFrame(() => {
+        initTechHUD();
+        if (window.lucide) window.lucide.createIcons();
       });
     } else if (route === 'team') {
       renderTeam();
