@@ -1,207 +1,205 @@
 <!-- ============================================================
-         AUDIO LAB
-         ============================================================ -->
-    <section id="view-audio-lab" class="view-section active" style="padding:4rem 0 6rem;">
-      <div style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
+     AUDIO LAB
+     This is a fetched VIEW PARTIAL, injected into the shell
+     container <section id="view-audio-lab" class="view-section">
+     already in index.html. Do NOT redeclare id="view-audio-lab" or
+     class="view-section active" here — that caused the black-screen-
+     on-revisit bug. Use a plain wrapper div instead.
+     ============================================================ -->
+<div style="padding:4rem 0 6rem;">
+  <div style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
 
-        <!-- Header -->
-        <div style="text-align:center;margin-bottom:2.5rem;">
-          <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:0.75rem;">Interactive Demo</p>
-          <h2 class="font-display" style="font-size:2rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">Audio Lab</h2>
-          <p style="color:#6B7280;font-size:0.85rem;">Upload a local audio file. The pipeline processes it through spectral subtraction and wavelet denoising.</p>
-        </div>
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:0.75rem;">Interactive Demo</p>
+      <h2 class="font-display" style="font-size:2rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">Audio Lab</h2>
+      <p style="color:#6B7280;font-size:0.85rem;">Upload a local audio file. The pipeline processes it through spectral subtraction and wavelet denoising.</p>
+    </div>
 
-        <!-- Backend Status -->
-        <div style="display:flex;justify-content:center;margin-bottom:2rem;">
-          <div id="backend-status" class="backend-notice backend-offline">
-            <span id="backend-status-text">Checking backend…</span>
-          </div>
-        </div>
-
-        <!-- Main Lab Layout -->
-        <div style="display:grid;grid-template-columns:300px 1fr;gap:1.5rem;align-items:start;">
-
-          <!-- LEFT — Controls -->
-          <div style="display:flex;flex-direction:column;gap:1rem;">
-
-            <!-- Upload Zone -->
-            <div id="upload-zone" class="technical-panel" style="padding:2.5rem 1.5rem;text-align:center;border-style:dashed;border-width:2px;cursor:pointer;transition:border-color 0.2s ease;" role="button" tabindex="0">
-              <i data-lucide="upload-cloud" style="width:28px;height:28px;color:#4B5563;margin:0 auto 12px;display:block;"></i>
-              <div class="font-mono" style="font-size:10px;letter-spacing:0.18em;color:#9CA3AF;text-transform:uppercase;margin-bottom:6px;">Drop Audio File Here</div>
-              <p style="font-size:10px;color:#4B5563;margin-bottom:14px;">or</p>
-              <input type="file" id="file-input" class="hidden" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3">
-              <button onclick="document.getElementById('file-input').click()" class="font-mono" style="font-size:10px;letter-spacing:0.12em;color:#00F0FF;border:1px solid rgba(0,240,255,0.3);padding:6px 16px;border-radius:4px;cursor:pointer;background:transparent;text-transform:uppercase;transition:background 0.2s;" onmouseover="this.style.background='rgba(0,240,255,0.08)'" onmouseout="this.style.background='transparent'">
-                Browse File
-              </button>
-              <div class="font-mono" style="font-size:9px;color:#374151;margin-top:14px;text-transform:uppercase;letter-spacing:0.1em;">Supported: .wav / .mp3</div>
-            </div>
-
-            <!-- File Metadata -->
-            <div class="technical-panel" style="padding:1.25rem;border-color:rgba(255,255,255,0.05);">
-              <div style="display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                  <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">Filename</span>
-                  <span id="meta-filename" class="font-mono" style="font-size:10px;color:#9CA3AF;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                  <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">Duration</span>
-                  <span id="meta-duration" class="font-mono" style="font-size:10px;color:#9CA3AF;">—</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                  <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">Sample Rate</span>
-                  <span id="meta-samplerate" class="font-mono" style="font-size:10px;color:#9CA3AF;">—</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                  <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">Channels</span>
-                  <span id="meta-channels" class="font-mono" style="font-size:10px;color:#9CA3AF;">—</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;">
-                  <!-- Peak dBFS removed per UI update -->
-                </div>
-                <!-- RMS Level removed per UI update -->
-              </div>
-            </div>
-
-            <!-- Analyze Button -->
-            <button id="btn-analyze" disabled
-              style="width:100%;padding:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
-                     border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:#4B5563;border-radius:6px;cursor:not-allowed;transition:all 0.2s;">
-              Analyze Audio
-            </button>
-
-            <!-- Pipeline Checklist (No numbers) -->
-            <div id="processing-timeline" class="technical-panel" style="padding:1.25rem;border-color:rgba(255,255,255,0.05);display:none;">
-              <div class="font-mono" style="font-size:9px;letter-spacing:0.15em;color:#4B5563;text-transform:uppercase;margin-bottom:12px;">Pipeline Stages</div>
-              <div style="display:flex;flex-direction:column;gap:8px;" id="checklist">
-                <div class="checklist-item" id="step-1"><div class="step-box"></div><span>Audio Decode</span></div>
-                <div class="checklist-item" id="step-2"><div class="step-box"></div><span>Spectral Subtraction</span></div>
-                <div class="checklist-item" id="step-3"><div class="step-box"></div><span>Wavelet Denoising</span></div>
-                <div class="checklist-item" id="step-4"><div class="step-box"></div><span>Output Synthesis</span></div>
-              </div>
-            </div>
-
-            <!-- ML Classification panel removed per user request -->
-
-            <!-- Error Panel -->
-            <div id="error-panel" class="error-panel" style="display:none;">
-              <div class="font-mono" style="font-size:9px;letter-spacing:0.15em;color:#EF4444;text-transform:uppercase;margin-bottom:8px;">Processing Error</div>
-              <p style="font-size:11px;color:#9CA3AF;line-height:1.6;margin-bottom:8px;" id="error-message">Unknown error.</p>
-              <details style="cursor:pointer;">
-                <summary class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.08em;">Technical Details</summary>
-                <pre id="error-detail" style="font-size:9px;color:#6B7280;margin-top:8px;white-space:pre-wrap;word-break:break-all;"></pre>
-              </details>
-            </div>
-
-          </div>
-
-          <!-- RIGHT — Visualization -->
-          <div id="lab-results" style="display:none;flex-direction:column;gap:1.25rem;">
-
-            <!-- Metrics Row (RMS Reduction & Crest Factor Only) -->
-            <div id="metrics-panel" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
-              <div class="metric-card">
-                <div class="metric-value" id="metric-rms">—</div>
-                <div class="metric-label">RMS Reduction</div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-value" id="metric-crest">—</div>
-                <div class="metric-label">Crest Factor</div>
-              </div>
-            </div>
-
-            <!-- Minimal ML Summary (category + confidence) -->
-            <div id="ml-summary" style="display:none;margin-top:12px;">
-              <div class="technical-panel" style="padding:12px;display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <div class="font-mono" style="font-size:10px;color:#A855F7;">ML Environment</div>
-                  <div id="ml-category" class="font-mono" style="font-size:12px;color:#F3F4F6;">—</div>
-                </div>
-                <div>
-                  <div style="background:rgba(255,255,255,0.06);height:8px;border-radius:6px;overflow:hidden;">
-                    <div id="ml-confidence-bar" style="height:100%;width:0%;background:#A855F7;transition:width 0.3s ease;"></div>
-                  </div>
-                  <div id="ml-confidence-text" class="font-mono" style="font-size:9px;color:#9CA3AF;margin-top:6px;">—</div>
-                <!-- Dynamic DSP Parameters chosen by ML -->
-                <div id="ml-dsp-params" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);gap:6px;flex-wrap:wrap;">
-                  <span id="dsp-badge-wavelet" class="font-mono" style="font-size:9px;background:rgba(168,85,247,0.15);color:#C084FC;padding:2px 6px;border-radius:4px;border:1px solid rgba(168,85,247,0.3);">Wavelet: —</span>
-                  <span id="dsp-badge-alpha" class="font-mono" style="font-size:9px;background:rgba(6,182,212,0.15);color:#22D3EE;padding:2px 6px;border-radius:4px;border:1px solid rgba(6,182,212,0.3);">Spectral α: —</span>
-                  <span id="dsp-badge-beta" class="font-mono" style="font-size:9px;background:rgba(59,130,246,0.15);color:#60A5FA;padding:2px 6px;border-radius:4px;border:1px solid rgba(59,130,246,0.3);">Spectral β: —</span>
-                </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- ORIGINAL Signal -->
-            <div class="technical-panel" style="padding:1.25rem;border-color:rgba(255,255,255,0.06);">
-              <div class="font-mono" style="font-size:10px;letter-spacing:0.18em;color:#6B7280;text-transform:uppercase;margin-bottom:1rem;">Original</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-                <div>
-                  <div class="font-mono" style="font-size:8px;color:#374151;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Waveform</div>
-                  <div class="canvas-container" style="height:80px;">
-                    <canvas id="canvas-wave-original"></canvas>
-                  </div>
-                </div>
-                <div>
-                  <div class="font-mono" style="font-size:8px;color:#374151;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Spectrogram (STFT)</div>
-                  <div class="canvas-container" style="height:80px;">
-                    <canvas id="canvas-spec-original"></canvas>
-                  </div>
-                </div>
-              </div>
-              <!-- Playback -->
-              <div style="display:flex;align-items:center;gap:10px;background:#090B10;border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:8px 12px;">
-                <button class="play-btn" id="play-original" title="Play original">
-                  <i data-lucide="play" style="width:14px;height:14px;"></i>
-                </button>
-                <div style="flex:1;background:rgba(255,255,255,0.07);height:3px;border-radius:2px;overflow:hidden;">
-                  <div id="progress-original" style="height:100%;background:#6B7280;width:0%;transition:width 0.1s linear;"></div>
-                </div>
-                <span id="time-original" class="font-mono" style="font-size:9px;color:#4B5563;">0:00</span>
-              </div>
-            </div>
-
-            <!-- ENHANCED Signal -->
-            <div class="technical-panel" style="padding:1.25rem;border-color:rgba(0,240,255,0.15);">
-              <div class="font-mono" style="font-size:10px;letter-spacing:0.18em;color:#00F0FF;text-transform:uppercase;margin-bottom:1rem;">Enhanced</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-                <div>
-                  <div class="font-mono" style="font-size:8px;color:#374151;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Waveform</div>
-                  <div class="canvas-container" style="height:80px;">
-                    <canvas id="canvas-wave-enhanced"></canvas>
-                  </div>
-                </div>
-                <div>
-                  <div class="font-mono" style="font-size:8px;color:#374151;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Spectrogram (STFT)</div>
-                  <div class="canvas-container" style="height:80px;">
-                    <canvas id="canvas-spec-enhanced"></canvas>
-                  </div>
-                </div>
-              </div>
-              <!-- Playback -->
-              <div style="display:flex;align-items:center;gap:10px;background:#090B10;border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:8px 12px;">
-                <button class="play-btn" id="play-enhanced" title="Play enhanced">
-                  <i data-lucide="play" style="width:14px;height:14px;"></i>
-                </button>
-                <div style="flex:1;background:rgba(255,255,255,0.07);height:3px;border-radius:2px;overflow:hidden;">
-                  <div id="progress-enhanced" style="height:100%;background:#00F0FF;width:0%;transition:width 0.1s linear;"></div>
-                </div>
-                <span id="time-enhanced" class="font-mono" style="font-size:9px;color:#4B5563;">0:00</span>
-              </div>
-            </div>
-
-            <!-- Actions Bar -->
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#090B10;border:1px solid rgba(255,255,255,0.05);border-radius:6px;">
-              <div class="font-mono" style="font-size:10px;color:#10B981;letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
-                <i data-lucide="check-circle" style="width:14px;height:14px;"></i>
-                Processing Complete
-              </div>
-              <button id="btn-download" class="font-mono" style="font-size:9px;letter-spacing:0.12em;color:#00F0FF;border:1px solid rgba(0,240,255,0.3);padding:7px 16px;border-radius:4px;cursor:pointer;background:transparent;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(0,240,255,0.08)'" onmouseout="this.style.background='transparent'">
-                <i data-lucide="download" style="width:12px;height:12px;"></i> Download Enhanced WAV
-              </button>
-            </div>
-
-          </div>
-
-        </div>
+    <!-- Backend Status -->
+    <div style="display:flex;justify-content:center;margin-bottom:2rem;">
+      <div id="backend-status" class="backend-notice backend-offline">
+        <span id="backend-status-text">Checking backend…</span>
       </div>
-    </section>
+    </div>
+
+    <!-- Main Lab Layout -->
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:1.5rem;align-items:start;">
+
+      <!-- LEFT — Controls -->
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+
+        <!-- Upload Zone -->
+        <div id="upload-zone" class="technical-panel" style="padding:2.5rem 1.5rem;text-align:center;border-style:dashed;border-width:2px;cursor:pointer;transition:border-color 0.2s ease;" role="button" tabindex="0">
+          <i data-lucide="upload-cloud" style="width:28px;height:28px;color:#4B5563;margin:0 auto 12px;display:block;"></i>
+          <div class="font-mono" style="font-size:10px;letter-spacing:0.18em;color:#9CA3AF;text-transform:uppercase;margin-bottom:6px;">Drop Audio File Here</div>
+          <p style="font-size:10px;color:#4B5563;margin-bottom:14px;">or</p>
+          <input type="file" id="file-input" class="hidden" accept="audio/wav,audio/mpeg,audio/mp3,.wav,.mp3">
+          <button onclick="document.getElementById('file-input').click()" class="font-mono" style="font-size:10px;letter-spacing:0.12em;color:#00F0FF;border:1px solid rgba(0,240,255,0.3);padding:6px 16px;border-radius:4px;cursor:pointer;background:transparent;text-transform:uppercase;transition:background 0.2s;" onmouseover="this.style.background='rgba(0,240,255,0.08)'" onmouseout="this.style.background='transparent'">
+            Browse File
+          </button>
+          <div class="font-mono" style="font-size:9px;color:#374151;margin-top:14px;text-transform:uppercase;letter-spacing:0.1em;">Supported: .wav / .mp3</div>
+        </div>
+
+        <!-- File Metadata -->
+        <div class="technical-panel" style="padding:1.25rem;border-color:rgba(255,255,255,0.05);">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;">
+              <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">Filename</span>
+              <span id="meta-filename" class="font-mono" style="font-size:10px;color:#9CA3AF;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">Duration</span>
+              <span id="meta-duration" class="font-mono" style="font-size:10px;color:#9CA3AF;">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">Sample Rate</span>
+              <span id="meta-samplerate" class="font-mono" style="font-size:10px;color:#9CA3AF;">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.1em;">Channels</span>
+              <span id="meta-channels" class="font-mono" style="font-size:10px;color:#9CA3AF;">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <!-- Peak dBFS removed per UI update -->
+            </div>
+            <!-- RMS Level removed per UI update -->
+          </div>
+        </div>
+
+        <!-- Analyze Button -->
+        <button id="btn-analyze" disabled
+          style="width:100%;padding:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
+                 border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:#4B5563;border-radius:6px;cursor:not-allowed;transition:all 0.2s;">
+          Analyze Audio
+        </button>
+
+        <!-- Pipeline Checklist -->
+        <div id="processing-timeline" class="technical-panel" style="padding:1.25rem;border-color:rgba(255,255,255,0.05);display:none;">
+          <div class="font-mono" style="font-size:9px;letter-spacing:0.15em;color:#4B5563;text-transform:uppercase;margin-bottom:12px;">Pipeline Stages</div>
+          <div style="display:flex;flex-direction:column;gap:8px;" id="checklist">
+            <div class="checklist-item" id="step-1"><div class="step-box"></div><span>Audio Decode</span></div>
+            <div class="checklist-item" id="step-2"><div class="step-box"></div><span>Spectral Subtraction</span></div>
+            <div class="checklist-item" id="step-3"><div class="step-box"></div><span>Wavelet Denoising</span></div>
+            <div class="checklist-item" id="step-4"><div class="step-box"></div><span>Output Synthesis</span></div>
+          </div>
+        </div>
+
+        <!-- Error Panel -->
+        <div id="error-panel" class="error-panel" style="display:none;">
+          <div class="font-mono" style="font-size:9px;letter-spacing:0.15em;color:#EF4444;text-transform:uppercase;margin-bottom:8px;">Processing Error</div>
+          <p style="font-size:11px;color:#9CA3AF;line-height:1.6;margin-bottom:8px;" id="error-message">Unknown error.</p>
+          <details style="cursor:pointer;">
+            <summary class="font-mono" style="font-size:9px;color:#4B5563;text-transform:uppercase;letter-spacing:0.08em;">Technical Details</summary>
+            <pre id="error-detail" style="font-size:9px;color:#6B7280;margin-top:8px;white-space:pre-wrap;word-break:break-all;"></pre>
+          </details>
+        </div>
+
+      </div>
+
+      <!-- RIGHT — Visualization -->
+      <div id="lab-results" style="display:none;flex-direction:column;gap:1.25rem;">
+
+        <div id="metrics-panel" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
+          <div class="metric-card">
+            <div class="metric-value" id="metric-rms">—</div>
+            <div class="metric-label">RMS Reduction</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="metric-crest">—</div>
+            <div class="metric-label">Crest Factor</div>
+          </div>
+        </div>
+
+        <div id="ml-summary" style="display:none;margin-top:12px;">
+          <div class="technical-panel" style="padding:12px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div class="font-mono" style="font-size:10px;color:#A855F7;">ML Environment</div>
+              <div id="ml-category" class="font-mono" style="font-size:12px;color:#F3F4F6;">—</div>
+            </div>
+            <div>
+              <div style="background:rgba(255,255,255,0.06);height:8px;border-radius:6px;overflow:hidden;">
+                <div id="ml-confidence-bar" style="height:100%;width:0%;background:#A855F7;transition:width 0.3s ease;"></div>
+              </div>
+              <div id="ml-confidence-text" class="font-mono" style="font-size:9px;color:#9CA3AF;margin-top:6px;">—</div>
+              <div id="ml-dsp-params" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);gap:6px;flex-wrap:wrap;">
+                <span id="dsp-badge-wavelet" class="font-mono" style="font-size:9px;background:rgba(168,85,247,0.15);color:#C084FC;padding:2px 6px;border-radius:4px;border:1px solid rgba(168,85,247,0.3);">Wavelet: —</span>
+                <span id="dsp-badge-alpha" class="font-mono" style="font-size:9px;background:rgba(6,182,212,0.15);color:#22D3EE;padding:2px 6px;border-radius:4px;border:1px solid rgba(6,182,212,0.3);">Spectral α: —</span>
+                <span id="dsp-badge-beta" class="font-mono" style="font-size:9px;background:rgba(59,130,246,0.15);color:#60A5FA;padding:2px 6px;border-radius:4px;border:1px solid rgba(59,130,246,0.3);">Spectral β: —</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ORIGINAL Signal -->
+        <div class="technical-panel" style="padding:1.25rem;border-color:rgba(255,255,255,0.06);">
+          <div class="font-mono" style="font-size:10px;letter-spacing:0.18em;color:#6B7280;text-transform:uppercase;margin-bottom:1rem;">Original</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div>
+              <div class="font-mono" style="font-size:8px;color:#374151;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Waveform</div>
+              <div class="canvas-container" style="height:80px;">
+                <canvas id="canvas-wave-original"></canvas>
+              </div>
+            </div>
+            <div>
+              <div class="font-mono" style="font-size:8px;color:#374151;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Spectrogram (STFT)</div>
+              <div class="canvas-container" style="height:80px;">
+                <canvas id="canvas-spec-original"></canvas>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#090B10;border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:8px 12px;">
+            <button class="play-btn" id="play-original" title="Play original">
+              <i data-lucide="play" style="width:14px;height:14px;"></i>
+            </button>
+            <div style="flex:1;background:rgba(255,255,255,0.07);height:3px;border-radius:2px;overflow:hidden;">
+              <div id="progress-original" style="height:100%;background:#6B7280;width:0%;transition:width 0.1s linear;"></div>
+            </div>
+            <span id="time-original" class="font-mono" style="font-size:9px;color:#4B5563;">0:00</span>
+          </div>
+        </div>
+
+        <!-- ENHANCED Signal -->
+        <div class="technical-panel" style="padding:1.25rem;border-color:rgba(0,240,255,0.15);">
+          <div class="font-mono" style="font-size:10px;letter-spacing:0.18em;color:#00F0FF;text-transform:uppercase;margin-bottom:1rem;">Enhanced</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div>
+              <div class="font-mono" style="font-size:8px;color:#374151;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Waveform</div>
+              <div class="canvas-container" style="height:80px;">
+                <canvas id="canvas-wave-enhanced"></canvas>
+              </div>
+            </div>
+            <div>
+              <div class="font-mono" style="font-size:8px;color:#374151;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Spectrogram (STFT)</div>
+              <div class="canvas-container" style="height:80px;">
+                <canvas id="canvas-spec-enhanced"></canvas>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;background:#090B10;border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:8px 12px;">
+            <button class="play-btn" id="play-enhanced" title="Play enhanced">
+              <i data-lucide="play" style="width:14px;height:14px;"></i>
+            </button>
+            <div style="flex:1;background:rgba(255,255,255,0.07);height:3px;border-radius:2px;overflow:hidden;">
+              <div id="progress-enhanced" style="height:100%;background:#00F0FF;width:0%;transition:width 0.1s linear;"></div>
+            </div>
+            <span id="time-enhanced" class="font-mono" style="font-size:9px;color:#4B5563;">0:00</span>
+          </div>
+        </div>
+
+        <!-- Actions Bar -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#090B10;border:1px solid rgba(255,255,255,0.05);border-radius:6px;">
+          <div class="font-mono" style="font-size:10px;color:#10B981;letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+            <i data-lucide="check-circle" style="width:14px;height:14px;"></i>
+            Processing Complete
+          </div>
+          <button id="btn-download" class="font-mono" style="font-size:9px;letter-spacing:0.12em;color:#00F0FF;border:1px solid rgba(0,240,255,0.3);padding:7px 16px;border-radius:4px;cursor:pointer;background:transparent;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(0,240,255,0.08)'" onmouseout="this.style.background='transparent'">
+            <i data-lucide="download" style="width:12px;height:12px;"></i> Download Enhanced WAV
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

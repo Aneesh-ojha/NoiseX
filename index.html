@@ -8,6 +8,7 @@
   <!-- External Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <!-- Application Stylesheets -->
   <link rel="stylesheet" href="css/styles.css">
@@ -65,9 +66,6 @@
     <!-- ============================================================
          HOME PAGE
          ============================================================ -->
-   <!-- ============================================================
-         HOME PAGE
-         ============================================================ -->
     <section id="view-home" class="view-section active relative">
 
       <!-- FIRST VIEWPORT — Logo Zoom Runway -->
@@ -91,7 +89,6 @@
               id="hero-logo"
               onerror="this.style.display='none';document.getElementById('hero-logo-text').style.display='block'"
             >
-            <!-- Fallback if image missing -->
             <div id="hero-logo-text" class="logo-hero-text" style="display:none;">NOISE X</div>
           </div>
 
@@ -103,34 +100,80 @@
         </div>
       </div>
 
-      <!-- SECOND VIEWPORT — Your Original Scroll Reveal Content -->
-      <div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:5rem 1.5rem; position:relative; z-index:10;">
-        <div class="scroll-reveal" id="home-reveal" style="max-width:700px;width:100%;text-align:center;">
+      <!-- SECOND VIEWPORT — Interactive 3D Hardware Showcase -->
+      <div id="hardware-scroll-track" class="relative h-[250vh] w-full bg-black">
+        
+        <!-- Sticky 3D Viewport Pin -->
+        <div class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+          
+          <!-- Subtle Grid Background -->
+          <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:28px_28px] opacity-25 pointer-events-none"></div>
 
-          <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:2rem;">
-            Signal Intelligence Platform
-          </p>
+          <!-- Mount Target for Three.js Canvas -->
+          <div id="pynq-3d-container" class="absolute inset-0 z-10 w-full h-full"></div>
 
-          <h1 class="font-display" style="font-size:clamp(1.6rem,4vw,3rem);font-weight:700;color:#F3F4F6;letter-spacing:0.05em;text-transform:uppercase;line-height:1.2;margin-bottom:1.5rem;">
-            Intelligent Noise Suppression<br>
-            <span style="color:#4B5563;font-size:0.7em;letter-spacing:0.04em;">for Mission-Critical Communication</span>
-          </h1>
+          <!-- Overlay Telemetry & Architecture Callouts -->
+          <div class="relative z-20 pointer-events-none max-w-6xl w-full h-full mx-auto px-6 flex flex-col justify-between py-24">
+            
+            <!-- Stage 0: Intro Title -->
+            <div id="callout-intro" class="transition-all duration-500 max-w-xl">
+              <span class="text-cyan-400 font-mono text-[11px] tracking-[0.25em] uppercase bg-cyan-950/60 border border-cyan-800/50 px-3 py-1 rounded-full">
+                Tactical Edge Acceleration
+              </span>
+              <h2 class="text-3xl md:text-5xl font-black text-white mt-4 tracking-tight">
+                Xilinx Zynq-7020 SoC
+              </h2>
+              <p class="text-neutral-400 text-sm mt-3 leading-relaxed">
+                PYNQ-Z2 heterogeneous platform dividing real-time audio tasks between dual ARM cores and Artix-7 programmable logic.
+              </p>
+            </div>
 
-          <p style="color:#6B7280;font-size:0.92rem;line-height:1.75;max-width:520px;margin:0 auto 2.5rem;">
-            A hybrid ML and DSP pipeline deployed on PYNQ-Z2 (Xilinx Zynq-7000 platform)
-            that identifies complex acoustic disturbances and enhances speech clarity in real time.
-          </p>
+            <!-- Stage 1: Audio Ingestion Callout -->
+            <div id="callout-audio" class="self-start max-w-sm p-6 rounded-2xl border border-emerald-500/30 bg-neutral-900/80 backdrop-blur-xl opacity-0 translate-y-4 transition-all duration-500">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider">Audio Ingestion</span>
+              </div>
+              <h3 class="text-white text-lg font-bold">ADAU1761 24-Bit Stereo Codec</h3>
+              <p class="text-neutral-400 text-xs mt-2 leading-relaxed">
+                Direct I2S interface delivering 16kHz low-noise sampling from line/mic inputs directly to FPGA DMA buffers.
+              </p>
+            </div>
 
-          <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-            <a href="#/audio-lab" class="btn-primary">Enter Audio Lab</a>
-            <a href="#/solution"  class="btn-secondary" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;">Our Solution</a>
+            <!-- Stage 2: Processing System (PS) Callout -->
+            <div id="callout-ps" class="self-start max-w-sm p-6 rounded-2xl border border-cyan-500/30 bg-neutral-900/80 backdrop-blur-xl opacity-0 translate-y-4 transition-all duration-500">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span class="text-cyan-400 font-mono text-xs font-bold uppercase tracking-wider">Processing System (PS)</span>
+              </div>
+              <h3 class="text-white text-lg font-bold">Dual ARM Cortex-A9 @ 650 MHz</h3>
+              <p class="text-neutral-400 text-xs mt-2 leading-relaxed">
+                Orchestrates streaming telemetry, dynamic task allocation, and sliding-window Random Forest acoustic threat classification.
+              </p>
+            </div>
+
+            <!-- Stage 3: Programmable Logic (PL) Callout -->
+            <div id="callout-pl" class="self-end max-w-sm p-6 rounded-2xl border border-amber-500/30 bg-neutral-900/80 backdrop-blur-xl opacity-0 translate-y-4 transition-all duration-500">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                <span class="text-amber-400 font-mono text-xs font-bold uppercase tracking-wider">Programmable Logic (PL)</span>
+              </div>
+              <h3 class="text-white text-lg font-bold">Artix-7 FPGA Fabric</h3>
+              <p class="text-neutral-400 text-xs mt-2 leading-relaxed">
+                Pipelined DSP48E1 slices execute cycle-accurate STFT spectral over-subtraction and discrete wavelet soft thresholding in &lt;1.2ms.
+              </p>
+            </div>
+
           </div>
 
-          <!-- Subtle static waveform -->
-          <div style="margin-top:3.5rem;opacity:0.12;">
-            <svg viewBox="0 0 600 30" style="width:100%;height:24px;stroke:#00F0FF;" fill="none" stroke-width="0.8">
-              <path d="M0,15 Q15,8 30,15 T60,15 T90,5 T120,15 T150,25 T180,15 T210,8 T240,15 T270,22 T300,15 T330,7 T360,15 T390,23 T420,15 T450,9 T480,15 T510,21 T540,15 T570,10 T600,15"></path>
-            </svg>
+          <!-- Bottom Action Buttons -->
+          <div class="absolute bottom-8 z-20 flex gap-4 pointer-events-auto">
+            <a href="#/audio-lab" class="btn-primary flex items-center gap-2">
+              <i data-lucide="play-circle" class="w-4 h-4"></i> Enter Audio Lab
+            </a>
+            <a href="#/solution" class="btn-secondary text-xs uppercase tracking-wider flex items-center gap-2">
+              Our Solution
+            </a>
           </div>
 
         </div>
@@ -138,48 +181,22 @@
 
     </section>
 
+    <!-- OUR SOLUTION -->
+    <section id="view-solution" class="view-section" style="padding:6rem 0 8rem;"></section>
 
-    <!-- ============================================================
-         OUR SOLUTION
-         ============================================================ -->
-    <section id="view-solution" class="view-section" style="padding:6rem 0 8rem;">
-</section>
+    <!-- TECHNOLOGY -->
+    <section id="view-technology" class="view-section" style="padding:6rem 0 8rem;"></section>
 
+    <!-- SYSTEM ARCHITECTURE -->
+    <section id="view-architecture" class="view-section" style="padding:6rem 0 8rem;"></section>
 
-    <!-- ============================================================
-         TECHNOLOGY
-         ============================================================ -->
-    <section id="view-technology" class="view-section" style="padding:6rem 0 8rem;">
-</section>
+    <!-- AUDIO LAB -->
+    <section id="view-audio-lab" class="view-section" style="padding:4rem 0 6rem;"></section>
 
+    <!-- APPLICATIONS -->
+    <section id="view-applications" class="view-section" style="padding:6rem 0 8rem;"></section>
 
-    <!-- ============================================================
-         SYSTEM ARCHITECTURE
-         ============================================================ -->
-    <section id="view-architecture" class="view-section" style="padding:6rem 0 8rem;">
-</section>
-
-
-    <!-- ============================================================
-         AUDIO LAB
-         ============================================================ -->
-    <section id="view-audio-lab" class="view-section" style="padding:4rem 0 6rem;">
-</section>
-
-
-    <!-- Results section removed per project preference -->
-
-
-    <!-- ============================================================
-         APPLICATIONS
-         ============================================================ -->
-    <section id="view-applications" class="view-section" style="padding:6rem 0 8rem;">
-</section>
-
-
-  <!-- ============================================================
-         TEAM
-         ============================================================ -->
+    <!-- TEAM -->
     <section id="view-team" class="view-section team-section" style="padding:6rem 0 8rem;">
       <div class="team-header text-center mb-14">
         <p class="text-[11px] tracking-[0.25em] uppercase text-cyan-400 font-semibold mb-2">People</p>
@@ -191,7 +208,6 @@
         </p>
       </div>
 
-      <!-- Injection target for team-data.js -->
       <div id="team-grid" class="team-grid max-w-6xl mx-auto px-4"></div>
     </section>
 

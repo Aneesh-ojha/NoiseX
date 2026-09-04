@@ -1,65 +1,264 @@
-<div style="max-width:960px;margin:0 auto;padding:0 1.5rem;">
-
-  <div style="text-align:center;margin-bottom:4rem;">
-    <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:1rem;">Stack</p>
-    <h2 class="font-display" style="font-size:2.25rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;">Technology</h2>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  
+  <!-- Header -->
+  <div class="text-center max-w-2xl mx-auto mb-16">
+    <p class="text-[10px] font-mono tracking-[0.3em] uppercase text-cyan-400 font-bold mb-3">
+      System Architecture // Core Stack
+    </p>
+    <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white uppercase">
+      TECHNOLOGY
+    </h2>
+    <p class="text-neutral-400 text-sm mt-3 leading-relaxed">
+      A heterogeneous architecture dividing real-time audio transformation between FPGA fabric and supervisory ARM machine learning.
+    </p>
   </div>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;">
-
-    <!-- ML Classification -->
-    <div class="technical-panel" style="padding:2rem;">
-      <div class="font-mono" style="font-size:10px;color:#A855F7;margin-bottom:0.75rem;letter-spacing:0.15em;">ML</div>
-      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Acoustic Classification</h3>
-      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-        Feature extraction (ZCR, RMS energy, crest factor, kurtosis) identifies background threats like rotor wash, gunfire, or broadband noise to dynamically guide DSP parameters.
-      </p>
+  <!-- End-to-End System Visual Flow Diagram -->
+  <div class="mb-14 rounded-2xl border border-white/[0.08] bg-neutral-950/70 backdrop-blur-xl p-6 sm:p-8">
+    <div class="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-6">
+      <span class="text-[10px] font-mono uppercase tracking-[0.25em] text-cyan-400 font-bold flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        End-to-End Dataflow
+      </span>
+      <span class="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Co-Design Pipeline</span>
     </div>
 
-    <!-- Spectral Subtraction -->
-    <div class="technical-panel" style="padding:2rem;">
-      <div class="font-mono" style="font-size:10px;color:#00F0FF;margin-bottom:0.75rem;letter-spacing:0.15em;">STFT</div>
-      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Spectral Subtraction</h3>
-      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-        Short-Time Fourier Transform decomposes input frames into magnitude and phase spectra. Over-subtraction with a spectral floor suppresses continuous periodic noise while avoiding phase collapse.
-      </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- Flow 1: FPGA Real-Time DSP Pipeline -->
+      <div class="p-4 rounded-xl bg-neutral-900/60 border border-amber-500/20 flex flex-col justify-between">
+        <div>
+          <span class="text-[9px] font-mono uppercase text-amber-400 tracking-wider font-bold">FPGA Pipeline (PL)</span>
+          <h4 class="text-white font-bold text-sm mt-1">Real-Time DSP Stream</h4>
+          <p class="text-neutral-400 text-xs mt-2 font-mono leading-relaxed">
+            STFT / 1024-FFT <span class="text-amber-400">&rarr;</span> Spectral Subtraction <span class="text-amber-400">&rarr;</span> DWT / db10 <span class="text-amber-400">&rarr;</span> Reconstruction
+          </p>
+        </div>
+        <span class="text-[9px] font-mono text-neutral-500 mt-4 block">Deterministic hardware dataflow</span>
+      </div>
+
+      <!-- Flow 2: ARM Supervisory Control -->
+      <div class="p-4 rounded-xl bg-neutral-900/60 border border-cyan-500/20 flex flex-col justify-between">
+        <div>
+          <span class="text-[9px] font-mono uppercase text-cyan-400 tracking-wider font-bold">Supervisory Core (PS)</span>
+          <h4 class="text-white font-bold text-sm mt-1">Classification & Control</h4>
+          <p class="text-neutral-400 text-xs mt-2 font-mono leading-relaxed">
+            Features <span class="text-cyan-400">&rarr;</span> ML Classifier <span class="text-cyan-400">&rarr;</span> Policy LUT <span class="text-cyan-400">&rarr;</span> DSP Parameters
+          </p>
+        </div>
+        <span class="text-[9px] font-mono text-neutral-500 mt-4 block">Dynamic parameter update bus</span>
+      </div>
+
+      <!-- Flow 3: Audio I/O Interface -->
+      <div class="p-4 rounded-xl bg-neutral-900/60 border border-emerald-500/20 flex flex-col justify-between">
+        <div>
+          <span class="text-[9px] font-mono uppercase text-emerald-400 tracking-wider font-bold">Audio Interface</span>
+          <h4 class="text-white font-bold text-sm mt-1">Bidirectional I²S I/O</h4>
+          <p class="text-neutral-400 text-xs mt-2 font-mono leading-relaxed">
+            ADAU1761 <span class="text-emerald-400">&rarr;</span> I²S <span class="text-emerald-400">&rarr;</span> FPGA <span class="text-emerald-400">&rarr;</span> I²S <span class="text-emerald-400">&rarr;</span> ADAU1761
+          </p>
+        </div>
+        <span class="text-[9px] font-mono text-neutral-500 mt-4 block">24-bit / 48 kHz stereo streaming</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- The 6 Architectural Technologies -->
+  <div id="tech-card-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- Card 1: PYNQ-Z2 / Zynq-7020 -->
+    <div class="tech-card group relative rounded-2xl border border-white/[0.08] bg-neutral-950/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-cyan-500/50 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] flex flex-col justify-between overflow-hidden">
+      <div class="glow-layer pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="px-2 py-0.5 rounded font-mono text-[9px] font-bold tracking-widest uppercase bg-cyan-950/60 border border-cyan-800/40 text-cyan-400">
+            PLATFORM
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+        </div>
+
+        <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">
+          PYNQ-Z2 / Zynq-7020
+        </h3>
+        <p class="text-neutral-400 text-xs leading-relaxed mb-6">
+          FPGA + ARM Cortex-A9 heterogeneous architecture. Programmable Logic (PL) handles real-time deterministic DSP pipelines, while the Processing System (PS) handles supervision and ML guidance.
+        </p>
+      </div>
+
+      <div class="space-y-1.5 bg-black/40 border border-white/5 rounded-xl p-3 font-mono text-[10px]">
+        <div class="flex justify-between text-neutral-400">
+          <span>Processing Logic (PL):</span>
+          <span class="text-amber-400">Real-Time DSP</span>
+        </div>
+        <div class="flex justify-between text-neutral-400">
+          <span>Processing System (PS):</span>
+          <span class="text-cyan-400">Supervision / ML</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Wavelet Denoising -->
-    <div class="technical-panel" style="padding:2rem;">
-      <div class="font-mono" style="font-size:10px;color:#60A5FA;margin-bottom:0.75rem;letter-spacing:0.15em;">DWT</div>
-      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Wavelet Denoising</h3>
-      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-        Multi-resolution Discrete Wavelet Transform isolates high-frequency transient spikes. Soft subband thresholding eliminates impulsive artifacts without creating robotic distortion.
-      </p>
+    <!-- Card 2: STFT / FFT -->
+    <div class="tech-card group relative rounded-2xl border border-white/[0.08] bg-neutral-950/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] flex flex-col justify-between overflow-hidden">
+      <div class="glow-layer pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="px-2 py-0.5 rounded font-mono text-[9px] font-bold tracking-widest uppercase bg-amber-950/60 border border-amber-800/40 text-amber-400">
+            TRANSFORM
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+        </div>
+
+        <h3 class="text-lg font-bold text-white group-hover:text-amber-300 transition-colors mb-2">
+          STFT / FFT
+        </h3>
+        <p class="text-neutral-400 text-xs leading-relaxed mb-6">
+          1024-point Fast Fourier Transform engine creating frequency-domain representations. Deconstructs raw audio frames into separate magnitude and phase spectra for non-destructive processing.
+        </p>
+      </div>
+
+      <div class="space-y-1.5 bg-black/40 border border-white/5 rounded-xl p-3 font-mono text-[10px]">
+        <div class="flex justify-between text-neutral-400">
+          <span>Transform Size:</span>
+          <span class="text-amber-400 font-semibold">1024-Point FFT</span>
+        </div>
+        <div class="flex justify-between text-neutral-400">
+          <span>Domain Rep:</span>
+          <span class="text-white">Magnitude + Phase</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Hardware Acceleration -->
-    <div class="technical-panel" style="padding:2rem;">
-      <div class="font-mono" style="font-size:10px;color:#10B981;margin-bottom:0.75rem;letter-spacing:0.15em;">HW</div>
-      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">PYNQ-Z2 Acceleration</h3>
-      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-        Offloaded to the Xilinx Zynq-7000 (PYNQ-Z2) platform using high-throughput AXI4-Stream DMA, achieving 2.24 ms latency — a 638× speedup over pure software execution.
-      </p>
+    <!-- Card 3: Spectral Subtraction -->
+    <div class="tech-card group relative rounded-2xl border border-white/[0.08] bg-neutral-950/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] flex flex-col justify-between overflow-hidden">
+      <div class="glow-layer pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="px-2 py-0.5 rounded font-mono text-[9px] font-bold tracking-widest uppercase bg-amber-950/60 border border-amber-800/40 text-amber-400">
+            DSP FILTER
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+        </div>
+
+        <h3 class="text-lg font-bold text-white group-hover:text-amber-300 transition-colors mb-2">
+          Spectral Subtraction
+        </h3>
+        <p class="text-neutral-400 text-xs leading-relaxed mb-6">
+          Applies adaptive noise-spectrum estimation dynamically. Incorporates calibrated spectral floor and attenuation controls to eliminate stationary disturbances without generating musical artifacts.
+        </p>
+      </div>
+
+      <div class="space-y-1.5 bg-black/40 border border-white/5 rounded-xl p-3 font-mono text-[10px]">
+        <div class="flex justify-between text-neutral-400">
+          <span>Noise Estimation:</span>
+          <span class="text-amber-400 font-semibold">Adaptive Spectrum</span>
+        </div>
+        <div class="flex justify-between text-neutral-400">
+          <span>Floor Control:</span>
+          <span class="text-white">Spectral Floor Limit</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Dual-Domain Synthesis -->
-    <div class="technical-panel" style="padding:2rem;">
-      <div class="font-mono" style="font-size:10px;color:#F97316;margin-bottom:0.75rem;letter-spacing:0.15em;">SYNTHESIS</div>
-      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">Cascaded Synthesis</h3>
-      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-        Sequential reconstruction couples spectral noise reduction with wavelet detail cleanup, ensuring speech envelope integrity and formant preservation.
-      </p>
+    <!-- Card 4: DWT / Wavelet Denoising -->
+    <div class="tech-card group relative rounded-2xl border border-white/[0.08] bg-neutral-950/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-purple-500/50 hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] flex flex-col justify-between overflow-hidden">
+      <div class="glow-layer pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="px-2 py-0.5 rounded font-mono text-[9px] font-bold tracking-widest uppercase bg-purple-950/60 border border-purple-800/40 text-purple-400">
+            WAVELET
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+        </div>
+
+        <h3 class="text-lg font-bold text-white group-hover:text-purple-300 transition-colors mb-2">
+          DWT / Wavelet Denoising
+        </h3>
+        <p class="text-neutral-400 text-xs leading-relaxed mb-6">
+          Multi-level decomposition using the Daubechies 10 (db10) wavelet basis. Implements soft-thresholding across subband detail coefficients to clean non-stationary impulse and transient noise.
+        </p>
+      </div>
+
+      <div class="space-y-1.5 bg-black/40 border border-white/5 rounded-xl p-3 font-mono text-[10px]">
+        <div class="flex justify-between text-neutral-400">
+          <span>Wavelet Family:</span>
+          <span class="text-purple-400 font-semibold">Daubechies db10</span>
+        </div>
+        <div class="flex justify-between text-neutral-400">
+          <span>Threshold Mode:</span>
+          <span class="text-white">Soft-Thresholding</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Audio Codec -->
-    <div class="technical-panel" style="padding:2rem;">
-      <div class="font-mono" style="font-size:10px;color:#EAB308;margin-bottom:0.75rem;letter-spacing:0.15em;">AUDIO</div>
-      <h3 style="font-size:1rem;font-weight:600;color:#F3F4F6;margin-bottom:0.75rem;">High-Speed Codec</h3>
-      <p style="color:#6B7280;font-size:0.82rem;line-height:1.7;">
-        ADAU1761 SigmaDSP provides 24-bit / 48 kHz analog I/O. AXI DMA connects the codec directly to programmable logic for zero-copy, real-time streaming.
-      </p>
+    <!-- Card 5: ARM Cortex-A9 + ML -->
+    <div class="tech-card group relative rounded-2xl border border-white/[0.08] bg-neutral-950/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-cyan-500/50 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] flex flex-col justify-between overflow-hidden">
+      <div class="glow-layer pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="px-2 py-0.5 rounded font-mono text-[9px] font-bold tracking-widest uppercase bg-cyan-950/60 border border-cyan-800/40 text-cyan-400">
+            ML CLASSIFIER
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+        </div>
+
+        <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">
+          ARM Cortex-A9 + ML
+        </h3>
+        <p class="text-neutral-400 text-xs leading-relaxed mb-6">
+          Performs real-time feature extraction (RMS, spectral centroid, ZCR, spectral flux) on ARM. A lightweight model classifies disturbances and accesses a Policy LUT to set optimal DSP parameters.
+        </p>
+      </div>
+
+      <div class="space-y-1.5 bg-black/40 border border-white/5 rounded-xl p-3 font-mono text-[10px]">
+        <div class="flex justify-between text-neutral-400">
+          <span>Extracted Features:</span>
+          <span class="text-cyan-400 font-semibold">RMS, Centroid, ZCR, Flux</span>
+        </div>
+        <div class="flex justify-between text-neutral-400">
+          <span>Policy Control:</span>
+          <span class="text-white">Policy LUT &rarr; DSP Registers</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6: ADAU1761 + I²S -->
+    <div class="tech-card group relative rounded-2xl border border-white/[0.08] bg-neutral-950/60 backdrop-blur-xl p-6 transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col justify-between overflow-hidden">
+      <div class="glow-layer pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <span class="px-2 py-0.5 rounded font-mono text-[9px] font-bold tracking-widest uppercase bg-emerald-950/60 border border-emerald-800/40 text-emerald-400">
+            AUDIO I/O
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        </div>
+
+        <h3 class="text-lg font-bold text-white group-hover:text-emerald-300 transition-colors mb-2">
+          ADAU1761 + I²S
+        </h3>
+        <p class="text-neutral-400 text-xs leading-relaxed mb-6">
+          24-bit / 48 kHz low-noise audio codec. Handles microphone input capture and DAC/headset output streaming directly into FPGA fabric through dedicated I²S audio bus lines.
+        </p>
+      </div>
+
+      <div class="space-y-1.5 bg-black/40 border border-white/5 rounded-xl p-3 font-mono text-[10px]">
+        <div class="flex justify-between text-neutral-400">
+          <span>Resolution & Rate:</span>
+          <span class="text-emerald-400 font-semibold">24-Bit / 48 kHz</span>
+        </div>
+        <div class="flex justify-between text-neutral-400">
+          <span>Bus Protocol:</span>
+          <span class="text-white">Direct I²S Line/Mic IO</span>
+        </div>
+      </div>
     </div>
 
   </div>
+
 </div>

@@ -1,67 +1,163 @@
-<div style="max-width:800px;margin:0 auto;padding:0 1.5rem;">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  
+  <!-- Header Section -->
+  <div class="text-center max-w-2xl mx-auto mb-16">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 font-mono text-[11px] tracking-[0.25em] uppercase mb-4">
+      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+      Dual-Domain Signal Intelligence
+    </div>
+    <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+      OUR SOLUTION
+    </h2>
+    <p class="text-neutral-400 text-sm md:text-base leading-relaxed">
+      Decoupling acoustic classification from FPGA filter synthesis to guarantee sub-1.5ms latency without phase distortion.
+    </p>
+  </div>
 
-        <div style="text-align:center;margin-bottom:4rem;">
-          <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:1rem;">Architecture</p>
-          <h2 class="font-display" style="font-size:2.25rem;font-weight:700;color:#F3F4F6;letter-spacing:0.08em;text-transform:uppercase;">Our Solution</h2>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- Left Column: Live Circuit Flowchart -->
+    <div class="lg:col-span-7 relative flex flex-col items-center select-none py-6">
+      
+      <!-- Stage 1: Audio Ingestion -->
+      <div data-node="input" class="pipeline-card active group w-72 p-4 rounded-xl border border-cyan-500/40 bg-neutral-900/90 backdrop-blur-md cursor-pointer transition-all duration-300 hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.2)]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-mono text-[10px] text-cyan-400 tracking-wider uppercase font-bold">Stage 01 // Input</span>
+          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+        </div>
+        <h4 class="text-white font-bold text-sm">ADAU1761 Audio Ingest</h4>
+        <p class="text-neutral-400 text-xs mt-1 font-mono">16 kHz / 24-bit Mono PCM</p>
+      </div>
+
+      <!-- Connector 1 -->
+      <div class="h-10 w-0.5 bg-gradient-to-b from-cyan-500/80 to-cyan-500/20 relative">
+        <div class="connector-pulse bg-cyan-400"></div>
+      </div>
+
+      <!-- Stage 2: Preprocessing -->
+      <div data-node="preproc" class="pipeline-card group w-72 p-4 rounded-xl border border-white/10 bg-neutral-900/70 backdrop-blur-md cursor-pointer transition-all duration-300 hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.15)]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-mono text-[10px] text-neutral-400 group-hover:text-cyan-400 tracking-wider uppercase font-bold">Stage 02 // Normalize</span>
+          <span class="w-2 h-2 rounded-full bg-neutral-600 group-hover:bg-cyan-400"></span>
+        </div>
+        <h4 class="text-white font-bold text-sm">Frame Buffering & Preproc</h4>
+        <p class="text-neutral-400 text-xs mt-1 font-mono">512-sample Hanning Windowing</p>
+      </div>
+
+      <!-- Connector 2 -->
+      <div class="h-10 w-0.5 bg-gradient-to-b from-cyan-500/40 to-purple-500/40 relative">
+        <div class="connector-pulse bg-purple-400"></div>
+      </div>
+
+      <!-- Stage 3: ML Inference (PS ARM Core) -->
+      <div data-node="ml" class="pipeline-card group w-72 p-4 rounded-xl border border-purple-500/30 bg-neutral-900/70 backdrop-blur-md cursor-pointer transition-all duration-300 hover:border-purple-400 hover:shadow-[0_0_25px_rgba(168,85,247,0.2)]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-mono text-[10px] text-purple-400 tracking-wider uppercase font-bold">Stage 03 // Classification</span>
+          <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+        </div>
+        <h4 class="text-white font-bold text-sm">ARM Cortex-A9 ML Engine</h4>
+        <p class="text-neutral-400 text-xs mt-1 font-mono">Random Forest Class Detector</p>
+      </div>
+
+      <!-- Fork Connector -->
+      <div class="w-80 h-10 relative flex justify-between">
+        <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 320 40">
+          <path d="M 160,0 L 160,15 L 60,15 L 60,40 M 160,15 L 260,15 L 260,40" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+        </svg>
+      </div>
+
+      <!-- Parallel Hardware DSP Engines -->
+      <div class="flex gap-4 w-full max-w-md justify-between">
+        
+        <!-- Spectral Path -->
+        <div data-node="spectral" class="pipeline-card group w-1/2 p-3.5 rounded-xl border border-amber-500/30 bg-neutral-900/70 backdrop-blur-md cursor-pointer transition-all duration-300 hover:border-amber-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+          <span class="font-mono text-[9px] text-amber-400 tracking-wider uppercase font-bold">FPGA Fabric // DSP 01</span>
+          <h5 class="text-white font-bold text-xs mt-1">Spectral Subtraction</h5>
+          <p class="text-neutral-400 text-[10px] font-mono mt-0.5">Stationary Noise</p>
         </div>
 
-        <p style="color:#6B7280;font-size:0.9rem;line-height:1.8;max-width:580px;margin:0 auto 4rem;text-align:center;">
-          The architecture deliberately separates noise identification from signal processing.
-          Machine learning classifies the noise characteristics. Specialized DSP algorithms perform the actual audio enhancement.
-        </p>
-
-        <!-- Pipeline Diagram -->
-        <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
-
-          <!-- Node -->
-          <div class="technical-panel" style="width:100%;max-width:320px;padding:1.25rem 2rem;border-color:rgba(0,240,255,0.25);text-align:center;">
-            <div class="font-mono" style="font-size:11px;letter-spacing:0.18em;color:#00F0FF;text-transform:uppercase;">Audio Input</div>
-            <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:4px;">WAV / MP3 · 16 kHz · Mono</div>
-          </div>
-          <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);"></div>
-
-          <div class="technical-panel" style="width:100%;max-width:320px;padding:1.25rem 2rem;text-align:center;">
-            <div class="font-mono" style="font-size:11px;letter-spacing:0.14em;color:#9CA3AF;text-transform:uppercase;">Preprocessing</div>
-            <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:4px;">Resample · Normalize · Frame</div>
-          </div>
-          <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);"></div>
-
-          <div class="technical-panel" style="width:100%;max-width:320px;padding:1.25rem 2rem;border-color:rgba(168,85,247,0.25);text-align:center;">
-            <div class="font-mono" style="font-size:11px;letter-spacing:0.14em;color:#A855F7;text-transform:uppercase;">ML Identification</div>
-            <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:4px;">Classifies noise characteristics only</div>
-          </div>
-          <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);"></div>
-
-          <!-- Parallel DSP -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:440px;">
-            <div class="technical-panel" style="padding:1.25rem 1rem;text-align:center;">
-              <div class="font-mono" style="font-size:10px;letter-spacing:0.1em;color:#38BDF8;text-transform:uppercase;">Spectral Processing</div>
-              <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:6px;">STFT · Spectral Subtraction · ISTFT</div>
-            </div>
-            <div class="technical-panel" style="padding:1.25rem 1rem;text-align:center;">
-              <div class="font-mono" style="font-size:10px;letter-spacing:0.1em;color:#60A5FA;text-transform:uppercase;">Wavelet Processing</div>
-              <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:6px;">Multi-resolution Thresholding</div>
-            </div>
-          </div>
-          <div style="width:1px;height:32px;background:rgba(255,255,255,0.1);"></div>
-
-          <div class="technical-panel" style="width:100%;max-width:320px;padding:1.25rem 2rem;border-color:rgba(16,185,129,0.25);text-align:center;">
-            <div class="font-mono" style="font-size:11px;letter-spacing:0.18em;color:#10B981;text-transform:uppercase;">Enhanced Audio</div>
-            <div class="font-mono" style="font-size:9px;color:#4B5563;margin-top:4px;">16-bit PCM WAV · Improved SNR</div>
-          </div>
-
-        </div>
-
-        <!-- Key distinction note -->
-        <div style="margin-top:4rem;padding:1.5rem;border:1px solid rgba(255,255,255,0.06);border-radius:8px;background:rgba(255,255,255,0.02);">
-          <div class="font-mono" style="font-size:9px;letter-spacing:0.15em;color:#4B5563;text-transform:uppercase;margin-bottom:0.75rem;">Key Design Principle</div>
-          <p style="color:#6B7280;font-size:0.85rem;line-height:1.7;margin:0;">
-            ML is used exclusively for <span style="color:#A855F7;">noise environment classification</span>.
-            It does not perform the noise suppression itself.
-            The actual audio enhancement is carried out by the
-            <span style="color:#38BDF8;">spectral subtraction</span> and
-            <span style="color:#60A5FA;">wavelet denoising</span> DSP pipeline.
-          </p>
+        <!-- Wavelet Path -->
+        <div data-node="wavelet" class="pipeline-card group w-1/2 p-3.5 rounded-xl border border-cyan-500/30 bg-neutral-900/70 backdrop-blur-md cursor-pointer transition-all duration-300 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+          <span class="font-mono text-[9px] text-cyan-400 tracking-wider uppercase font-bold">FPGA Fabric // DSP 02</span>
+          <h5 class="text-white font-bold text-xs mt-1">Wavelet Denoising</h5>
+          <p class="text-neutral-400 text-[10px] font-mono mt-0.5">Impulse Suppression</p>
         </div>
 
       </div>
+
+      <!-- Merge Connector -->
+      <div class="w-80 h-10 relative flex justify-between">
+        <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 320 40">
+          <path d="M 60,0 L 60,25 L 160,25 L 160,40 M 260,0 L 260,25 L 160,25" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+        </svg>
+      </div>
+
+      <!-- Stage 6: Filtered Output -->
+      <div data-node="output" class="pipeline-card group w-72 p-4 rounded-xl border border-emerald-500/30 bg-neutral-900/70 backdrop-blur-md cursor-pointer transition-all duration-300 hover:border-emerald-400 hover:shadow-[0_0_25px_rgba(16,185,129,0.2)]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-mono text-[10px] text-emerald-400 tracking-wider uppercase font-bold">Final Stage // Output</span>
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        </div>
+        <h4 class="text-white font-bold text-sm">Enhanced Audio Stream</h4>
+        <p class="text-neutral-400 text-xs mt-1 font-mono">Phase Reconstructed / Clean</p>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Contextual Inspector HUD -->
+    <div class="lg:col-span-5 sticky top-24">
+      <div class="rounded-2xl border border-white/10 bg-neutral-950/80 backdrop-blur-xl p-6 shadow-2xl relative overflow-hidden">
+        
+        <div class="absolute top-0 right-0 transform translate-x-4 -translate-y-4 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-6">
+          <span class="text-[11px] font-mono uppercase tracking-[0.2em] text-neutral-400 flex items-center gap-2">
+            <i data-lucide="cpu" class="w-3.5 h-3.5 text-cyan-400"></i> Node Inspector
+          </span>
+          <span id="inspector-badge" class="px-2.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-cyan-950/60 border border-cyan-800/40 text-cyan-400">
+            ADAU1761
+          </span>
+        </div>
+
+        <h3 id="inspector-title" class="text-xl font-bold text-white mb-2">
+          Audio Input Interface
+        </h3>
+        <p id="inspector-desc" class="text-neutral-400 text-xs leading-relaxed mb-6">
+          Captures raw ambient sound using the on-board Analog Devices ADAU1761 stereo codec, feeding 16 kHz uncompressed 24-bit audio streams into dual DMA ring buffers.
+        </p>
+
+        <!-- Metric Specs Box -->
+        <div class="space-y-3 bg-neutral-900/60 border border-white/5 rounded-xl p-4 mb-6">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-neutral-400 font-mono">Sample Rate:</span>
+            <span id="stat-sample-rate" class="text-white font-mono font-semibold">16.0 kHz</span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-neutral-400 font-mono">Processing Unit:</span>
+            <span id="stat-processor" class="text-cyan-400 font-mono font-semibold">I2S Codec</span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-neutral-400 font-mono">Latency Overhead:</span>
+            <span id="stat-latency" class="text-emerald-400 font-mono font-semibold">&lt; 0.2 ms</span>
+          </div>
+        </div>
+
+        <!-- Simulated Visualizer HUD -->
+        <div>
+          <span class="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block mb-2">Live Node Vector</span>
+          <div class="h-16 w-full rounded-lg bg-black/60 border border-white/10 flex items-center justify-around px-3 overflow-hidden">
+            <div class="h-6 w-1 bg-cyan-400 rounded-full animate-pulse"></div>
+            <div class="h-10 w-1 bg-cyan-400 rounded-full animate-pulse delay-75"></div>
+            <div class="h-4 w-1 bg-cyan-400 rounded-full animate-pulse delay-150"></div>
+            <div class="h-12 w-1 bg-cyan-400 rounded-full animate-pulse delay-100"></div>
+            <div class="h-8 w-1 bg-cyan-400 rounded-full animate-pulse delay-200"></div>
+            <div class="h-14 w-1 bg-cyan-400 rounded-full animate-pulse"></div>
+            <div class="h-5 w-1 bg-cyan-400 rounded-full animate-pulse delay-300"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
