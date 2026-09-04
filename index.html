@@ -65,8 +65,78 @@
     <!-- ============================================================
          HOME PAGE
          ============================================================ -->
-    <section id="view-home" class="view-section active">
-</section>
+   <!-- ============================================================
+         HOME PAGE
+         ============================================================ -->
+    <section id="view-home" class="view-section active relative">
+
+      <!-- FIRST VIEWPORT — Logo Zoom Runway -->
+      <div id="hero-scroll-track" style="position:relative; height:180vh; width:100%;">
+        
+        <!-- Sticky Pin -->
+        <div class="hero-viewport" style="position:sticky; top:0; height:100vh; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden;">
+          
+          <!-- Subtle ambient glow behind logo -->
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+                      width:min(600px,80vw);height:min(600px,80vw);
+                      background:radial-gradient(circle, rgba(0,240,255,0.04) 0%, transparent 70%);
+                      pointer-events:none;z-index:0;"></div>
+
+          <!-- NOISE X Logo — Targeted for zoom and fade -->
+          <div id="hero-logo-container" style="position:relative; z-index:1; text-align:center; will-change:transform, opacity, filter;">
+            <img
+              src="assets/logo.png"
+              alt="NOISE X"
+              class="logo-hero"
+              id="hero-logo"
+              onerror="this.style.display='none';document.getElementById('hero-logo-text').style.display='block'"
+            >
+            <!-- Fallback if image missing -->
+            <div id="hero-logo-text" class="logo-hero-text" style="display:none;">NOISE X</div>
+          </div>
+
+          <!-- Scroll indicator -->
+          <div id="hero-scroll-hint" class="scroll-caret" style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%); transition: opacity 0.2s ease;">
+            <i data-lucide="chevron-down" style="width:20px;height:20px;color:#4B5563;"></i>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECOND VIEWPORT — Your Original Scroll Reveal Content -->
+      <div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:5rem 1.5rem; position:relative; z-index:10;">
+        <div class="scroll-reveal" id="home-reveal" style="max-width:700px;width:100%;text-align:center;">
+
+          <p class="font-mono" style="font-size:10px;letter-spacing:0.25em;color:#4B5563;text-transform:uppercase;margin-bottom:2rem;">
+            Signal Intelligence Platform
+          </p>
+
+          <h1 class="font-display" style="font-size:clamp(1.6rem,4vw,3rem);font-weight:700;color:#F3F4F6;letter-spacing:0.05em;text-transform:uppercase;line-height:1.2;margin-bottom:1.5rem;">
+            Intelligent Noise Suppression<br>
+            <span style="color:#4B5563;font-size:0.7em;letter-spacing:0.04em;">for Mission-Critical Communication</span>
+          </h1>
+
+          <p style="color:#6B7280;font-size:0.92rem;line-height:1.75;max-width:520px;margin:0 auto 2.5rem;">
+            A hybrid ML and DSP pipeline deployed on PYNQ-Z2 (Xilinx Zynq-7000 platform)
+            that identifies complex acoustic disturbances and enhances speech clarity in real time.
+          </p>
+
+          <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <a href="#/audio-lab" class="btn-primary">Enter Audio Lab</a>
+            <a href="#/solution"  class="btn-secondary" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;">Our Solution</a>
+          </div>
+
+          <!-- Subtle static waveform -->
+          <div style="margin-top:3.5rem;opacity:0.12;">
+            <svg viewBox="0 0 600 30" style="width:100%;height:24px;stroke:#00F0FF;" fill="none" stroke-width="0.8">
+              <path d="M0,15 Q15,8 30,15 T60,15 T90,5 T120,15 T150,25 T180,15 T210,8 T240,15 T270,22 T300,15 T330,7 T360,15 T390,23 T420,15 T450,9 T480,15 T510,21 T540,15 T570,10 T600,15"></path>
+            </svg>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
 
 
     <!-- ============================================================
@@ -107,11 +177,23 @@
 </section>
 
 
-    <!-- ============================================================
+  <!-- ============================================================
          TEAM
          ============================================================ -->
-    <section id="view-team" class="view-section" style="padding:6rem 0 8rem;">
-</section>
+    <section id="view-team" class="view-section team-section" style="padding:6rem 0 8rem;">
+      <div class="team-header text-center mb-14">
+        <p class="text-[11px] tracking-[0.25em] uppercase text-cyan-400 font-semibold mb-2">People</p>
+        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-neutral-200 to-neutral-500">
+          TEAM NOISE X
+        </h2>
+        <p class="text-neutral-400 text-sm md:text-base max-w-xl mx-auto mt-3">
+          A multidisciplinary team driving intelligent noise suppression research and deployment.
+        </p>
+      </div>
+
+      <!-- Injection target for team-data.js -->
+      <div id="team-grid" class="team-grid max-w-6xl mx-auto px-4"></div>
+    </section>
 
   </main>
 

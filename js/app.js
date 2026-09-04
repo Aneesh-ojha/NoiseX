@@ -1,4 +1,6 @@
 import { AudioLab } from './audio-lab.js';
+import { TEAM_MEMBERS } from './data/team-data.js';
+import { initHeroScroll } from './controllers/hero-scroll.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Mobile menu toggle
@@ -39,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  
   // ────────────────────────────────────────────────────────────────
   // Hash-based routing with dynamic fetching
   // ────────────────────────────────────────────────────────────────
@@ -69,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!activeView.innerHTML.trim()) {
       try {
         const response = await fetch(`views/${route}.html`);
-          if (response.ok) {
+        if (response.ok) {
           activeView.innerHTML = await response.text();
 
           // If we just loaded the audio lab, initialize or re-initialize it
@@ -97,10 +100,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     activeView.classList.add('active');
 
+    // ── Route-Specific Dynamic Hooks ─────────────────────────────
+    if (route === 'home') {
+      requestAnimationFrame(() => {
+        initHeroScroll();
+      });
+    } else if (route === 'team') {
+      renderTeam();
+    }
+    // ─────────────────────────────────────────────────────────────
+
     // Safety: if the view content is unexpectedly empty after loading, provide a retry message
     if (!activeView.innerHTML.trim()) {
       console.warn(`View ${route} is empty after load — inserting fallback message.`);
-      activeView.innerHTML = `<div style="padding: 4rem; text-align: center; color: #EF4444;">Content failed to load. <button id=\"retry-load\" style=\"margin-left:12px;padding:6px 10px;\">Retry</button></div>`;
+      activeView.innerHTML = `<div style="padding: 4rem; text-align: center; color: #EF4444;">Content failed to load. <button id="retry-load" style="margin-left:12px;padding:6px 10px;">Retry</button></div>`;
       const btn = activeView.querySelector('#retry-load');
       if (btn) btn.addEventListener('click', () => handleRoute());
     }
@@ -142,4 +155,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('hashchange', handleRoute);
   handleRoute(); // Initial route
+});
+  
+
+
+
+
+function renderTeam() {
+  const container = document.getElementById('team-grid');
+  if (!container) return;
+
+  container.innerHTML = TEAM_MEMBERS.map(member => `
+    <div class="team-card group relative rounded-2xl border border-white/[0.08] bg-neutral-900/40 backdrop-blur-md p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-[0_0_25px_rgba(6,182,212,0.15)] flex flex-col items-center text-center">
+      
+      <!-- Avatar Monogram -->
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-neutral-800 to-neutral-700 border border-white/10 flex items-center justify-center font-bold text-xl text-cyan-400 mb-4 group-hover:border-cyan-400/50 group-hover:shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all">
+        ${member.name.charAt(0)}
+      </div>
+
+      <!-- Member Details -->
+      <h3 class="font-semibold text-lg text-white group-hover:text-cyan-300 transition-colors">
+        ${member.name}
+      </h3>
+      <p class="text-xs uppercase tracking-wider text-cyan-400/80 font-medium mt-1 mb-6">
+        Core Contributor
+      </p>
+
+      <!-- Profile Links -->
+      <div class="flex items-center gap-4 pt-4 border-t border-white/[0.06] w-full justify-center">
+        <a href="${member.github}" target="_blank" rel="noopener noreferrer" class="text-xs text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5">
+          <i data-lucide="github" class="w-4 h-4"></i> GitHub
+        </a>
+        <a href="${member.linkedin}" target="_blank" rel="noopener noreferrer" class="text-xs text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5">
+          <i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn
+        </a>
+      </div>
+    </div>
+  `).join('');
+
+  // Re-run Lucide so the GitHub & LinkedIn icons render
+  if (window.lucide) {
+    window.lucide.createIcons();
+  }
+}
+
+
+document.addEventListener('DOMContentLoaded', renderTeam);
+document.addEventListener('DOMContentLoaded', () => {
+  initHeroScroll();
 });

@@ -172,3 +172,9 @@
   color: #00F0FF;
   background: rgba(0, 240, 255, 0.08);
 }
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}

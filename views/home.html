@@ -1,31 +1,4 @@
-<!-- FIRST VIEWPORT — Logo Only -->
-      <div class="hero-viewport">
-        <!-- Very subtle ambient glow behind logo -->
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-                    width:min(600px,80vw);height:min(600px,80vw);
-                    background:radial-gradient(circle, rgba(0,240,255,0.04) 0%, transparent 70%);
-                    pointer-events:none;z-index:0;"></div>
-
-        <!-- NOISE X Logo — large, centered, blended -->
-        <div style="position:relative;z-index:1;text-align:center;">
-          <img
-            src="assets/logo.png"
-            alt="NOISE X"
-            class="logo-hero"
-            id="hero-logo"
-            onerror="this.style.display='none';document.getElementById('hero-logo-text').style.display='block'"
-          >
-          <!-- Fallback if image missing -->
-          <div id="hero-logo-text" class="logo-hero-text" style="display:none;">NOISE X</div>
-        </div>
-
-        <!-- Scroll indicator -->
-        <div class="scroll-caret" style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);">
-          <i data-lucide="chevron-down" style="width:20px;height:20px;color:#4B5563;"></i>
-        </div>
-      </div>
-
-      <!-- SECOND VIEWPORT — Scroll Reveal Content -->
+<!-- SECOND VIEWPORT — Scroll Reveal Content -->
       <div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:5rem 1.5rem;">
         <div class="scroll-reveal" id="home-reveal" style="max-width:700px;width:100%;text-align:center;">
 
