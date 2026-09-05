@@ -1,0 +1,23 @@
+
+# Netlify configuration for static hosting
+
+[build]
+  # No build process needed for static HTML/CSS/JS
+  publish = "."
+  command = "echo 'No build required'"
+
+[[redirects]]
+  from = "/views/*"
+  to = "/views/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Handle SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

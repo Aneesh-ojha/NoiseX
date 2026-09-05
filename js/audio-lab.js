@@ -7,8 +7,14 @@ import { DSPEngine }          from './dsp-engine.js';
 import { SpectrogramRenderer } from './spectrogram.js';
 import { WaveformRenderer }   from './waveform.js';
 
-const BACKEND_URL    = 'http://localhost:5000/api/process-audio';
-const BACKEND_HEALTH = 'http://localhost:5000/health';
+// For local development:
+// const BACKEND_URL    = 'http://localhost:5000/api/process-audio';
+// const BACKEND_HEALTH = 'http://localhost:5000/health';
+
+// For deployed frontend with ngrok tunnel backend:
+// Replace YOUR_NGROK_URL with your actual ngrok URL (e.g., https://abc123xyz.ngrok.io)
+const BACKEND_URL    = 'https://YOUR_NGROK_URL/api/process-audio';
+const BACKEND_HEALTH = 'https://YOUR_NGROK_URL/health';
 
 export class AudioLab {
   constructor() {
