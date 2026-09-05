@@ -32,8 +32,7 @@ def audio_to_base64_wav(audio_arr: np.ndarray, sr: int) -> str:
 
 @app.route("/")
 def index():
-    return render_template("index.html")
-
+    return jsonify({"status": "running", "service": "NoiseX Adaptive DSP API"}), 200
 
 @app.route("/health", methods=["GET"])
 def health():
