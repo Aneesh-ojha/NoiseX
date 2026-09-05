@@ -7,14 +7,9 @@ import { DSPEngine }          from './dsp-engine.js';
 import { SpectrogramRenderer } from './spectrogram.js';
 import { WaveformRenderer }   from './waveform.js';
 
-// For local development:
-// const BACKEND_URL    = 'http://localhost:5000/api/process-audio';
-// const BACKEND_HEALTH = 'http://localhost:5000/health';
-
-// For deployed frontend with ngrok tunnel backend:
-// Replace YOUR_NGROK_URL with your actual ngrok URL (e.g., https://abc123xyz.ngrok.io)
-const BACKEND_URL    = 'https://YOUR_NGROK_URL/api/process-audio';
-const BACKEND_HEALTH = 'https://YOUR_NGROK_URL/health';
+// Production Render API endpoints
+const BACKEND_URL    = 'https://noisex-backend.onrender.com/api/process-audio';
+const BACKEND_HEALTH = 'https://noisex-backend.onrender.com/health';
 
 export class AudioLab {
   constructor() {
@@ -43,16 +38,13 @@ export class AudioLab {
 
   // Re-query important DOM nodes and (re)attach event listeners safely.
   _bindDOM() {
-    // Query elements
     this.uploadZone  = document.getElementById('upload-zone');
     this.fileInput   = document.getElementById('file-input');
     this.analyzeBtn  = document.getElementById('btn-analyze');
     this.downloadBtn = document.getElementById('btn-download');
 
-    // Remove previous listeners if present
     this._removeListeners();
 
-    // Attach new listeners and keep references
     if (this.fileInput) {
       this._handlers.fileChange = e => { if (e.target.files[0]) this._handleFile(e.target.files[0]); };
       this.fileInput.addEventListener('change', this._handlers.fileChange);
@@ -61,7 +53,11 @@ export class AudioLab {
     if (this.uploadZone) {
       this._handlers.dragOver = e => { e.preventDefault(); this.uploadZone.style.borderColor = '#00F0FF'; };
       this._handlers.dragLeave = () => { if (this.uploadZone) this.uploadZone.style.borderColor = ''; };
-      this._handlers.drop = e => { e.preventDefault(); if (this.uploadZone) this.uploadZone.style.borderColor = ''; if (e.dataTransfer.files[0]) this._handleFile(e.dataTransfer.files[0]); };
+      this._handlers.drop = e => { 
+        e.preventDefault(); 
+        if (this.uploadZone) this.uploadZone.style.borderColor = ''; 
+        if (e.dataTransfer.files[0]) this._handleFile(e.dataTransfer.files[0]); 
+      };
       this.uploadZone.addEventListener('dragover', this._handlers.dragOver);
       this.uploadZone.addEventListener('dragleave', this._handlers.dragLeave);
       this.uploadZone.addEventListener('drop', this._handlers.drop);
@@ -121,15 +117,26 @@ export class AudioLab {
   async _checkBackend() {
     const el = document.getElementById('backend-status');
     const tx = document.getElementById('backend-status-text');
+
+    if (el) el.className = 'backend-notice backend-checking';
+    if (tx) tx.textContent = '◌ Connecting to Python DSP Backend...';
+
     try {
-      const r = await fetch(BACKEND_HEALTH, { signal: AbortSignal.timeout(2000) });
-      if (!r.ok) throw new Error('non-ok');
+      const r = await fetch(BACKEND_HEALTH, { 
+        signal: AbortSignal.timeout(30000),
+        mode: 'cors'
+      });
+      if (!r.ok) throw new Error('non-ok response');
+      const data = await r.json();
+      if (data.status !== 'healthy') throw new Error('status not healthy');
+
       if (el) el.className = 'backend-notice backend-online';
       if (tx) tx.textContent = '● Python DSP Backend — Online';
       this._backendOnline = true;
-    } catch {
+    } catch (err) {
+      console.warn('[AudioLab] Health check failed:', err);
       if (el) el.className = 'backend-notice backend-offline';
-      if (tx) tx.textContent = '○ Python DSP Backend — Offline  (using browser DSP)';
+      if (tx) tx.textContent = '○ Python DSP Backend — Offline (using browser DSP)';
       this._backendOnline = false;
     }
   }
@@ -141,7 +148,8 @@ export class AudioLab {
       this.uploadZone.addEventListener('dragover', e => { e.preventDefault(); this.uploadZone.style.borderColor = '#00F0FF'; });
       this.uploadZone.addEventListener('dragleave', () => { this.uploadZone.style.borderColor = ''; });
       this.uploadZone.addEventListener('drop', e => {
-        e.preventDefault(); this.uploadZone.style.borderColor = '';
+        e.preventDefault(); 
+        this.uploadZone.style.borderColor = '';
         if (e.dataTransfer.files[0]) this._handleFile(e.dataTransfer.files[0]);
       });
     }
@@ -166,7 +174,6 @@ export class AudioLab {
     try {
       this.originalFile   = file;
       this.originalBuffer = await this.audioContext.decodeAudioData(ab);
-      // Ensure classifier knows the current sample rate
       if (this.classifier) this.classifier.sampleRate = this.originalBuffer.sampleRate || this.classifier.sampleRate;
       this._updateMetaUI(file.name, this.originalBuffer);
       this._initVisualizers();
@@ -192,14 +199,14 @@ export class AudioLab {
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
     const d = buf.getChannelData(0);
     let sq = 0, pk = 0;
-    for (let i = 0; i < d.length; i++) { sq += d[i]*d[i]; if (Math.abs(d[i]) > pk) pk = Math.abs(d[i]); }
-    const rms = Math.sqrt(sq / d.length);
+    for (let i = 0; i < d.length; i++) { 
+      sq += d[i]*d[i]; 
+      if (Math.abs(d[i]) > pk) pk = Math.abs(d[i]); 
+    }
     set('meta-filename',   name);
     set('meta-duration',   buf.duration.toFixed(2) + ' s');
     set('meta-samplerate', buf.sampleRate + ' Hz');
     set('meta-channels',   buf.numberOfChannels);
-    // Peak and RMS metadata removed from UI; keep values in memory if needed.
-    // (Previously updated elements 'meta-peak' and 'meta-rms')
   }
 
   async _runPipeline() {
@@ -219,7 +226,6 @@ export class AudioLab {
     try {
       const result = this._backendOnline ? await this._callBackend() : await this._runBrowserDSP();
       this.enhancedBuffer = result.buffer;
-      // Populate minimal ML summary if backend/browser provided classification
       try { if (result.classification) this._setML(result.classification, result.confidence, result.dspParams); } catch (e) { /* ignore */ }
       this.waveOriginal.render(this.originalBuffer, '#4B5563');
       this.waveEnhanced.render(this.enhancedBuffer, '#00F0FF');
@@ -241,9 +247,7 @@ export class AudioLab {
   async _runBrowserDSP() {
     this._markStep(2, 'done');
     const f = this.classifier.extractFeatures(this.originalBuffer.getChannelData(0));
-    console.debug('[AudioLab] ML features:', f);
     const ml = this.classifier.classify(f);
-    console.debug('[AudioLab] ML classify:', ml);
     this._markStep(3, 'done');
     this._markStep(4, 'done');
     this._markStep(5, 'running');
@@ -261,7 +265,11 @@ export class AudioLab {
     this._markStep(2, 'running');
     const fd = new FormData();
     fd.append('audio', this.originalFile);
-    const res = await fetch(BACKEND_URL, { method: 'POST', body: fd });
+    const res = await fetch(BACKEND_URL, { 
+      method: 'POST', 
+      body: fd,
+      mode: 'cors'
+    });
     if (!res.ok) throw new Error(`Backend ${res.status}: ${await res.text()}`);
     const json = await res.json();
     if (!json.success) throw new Error(json.error || 'Backend error');
@@ -269,8 +277,17 @@ export class AudioLab {
     const bytes = Uint8Array.from(atob(json.enhanced_wav_b64), c => c.charCodeAt(0));
     const buf   = await this.audioContext.decodeAudioData(bytes.buffer);
     [2,3,4,5,6].forEach(n => this._markStep(n, 'done'));
-    return { buffer: buf, classification: json.classification, confidence: json.confidence, dspParams: json.dsp_parameters_used,
-             metrics: { snrImprovement: json.snr_improvement, rmsReduction: json.rms_reduction, crestFactor: json.crest_factor } };
+    return { 
+      buffer: buf, 
+      classification: json.classification, 
+      confidence: json.confidence, 
+      dspParams: json.dsp_parameters_used,
+      metrics: { 
+        snrImprovement: json.snr_improvement, 
+        rmsReduction: json.rms_diff || json.rms_reduction, 
+        crestFactor: json.crest_factor 
+      } 
+    };
   }
 
   _togglePlay(which) {
@@ -298,7 +315,11 @@ export class AudioLab {
       try { this[otherKey].stop(); } catch {}
       this[otherKey] = null;
       const ob = document.getElementById(`play-${otherWhich}`);
-      if (ob) { ob.classList.remove('playing'); const oi = ob.querySelector('i'); if (oi) { oi.setAttribute('data-lucide','play'); lucide.createIcons(); } }
+      if (ob) { 
+        ob.classList.remove('playing'); 
+        const oi = ob.querySelector('i'); 
+        if (oi) { oi.setAttribute('data-lucide','play'); lucide.createIcons(); } 
+      }
     }
 
     const src = this.audioContext.createBufferSource();
@@ -340,11 +361,13 @@ export class AudioLab {
   _setAnalyzeState(s) {
     const btn = this.analyzeBtn;
     if (!btn) return;
-    const m = { idle: ['#4B5563','rgba(255,255,255,0.08)','rgba(255,255,255,0.03)','Analyze Audio',true,'not-allowed'],
-                ready: ['#00F0FF','rgba(0,240,255,0.35)','rgba(0,240,255,0.06)','Analyze Audio',false,'pointer'],
-                processing: ['#6B7280','rgba(255,255,255,0.08)','rgba(255,255,255,0.03)','Processing…',true,'not-allowed'],
-                done: ['#10B981','rgba(16,185,129,0.3)','rgba(16,185,129,0.06)','Analysis Complete',false,'pointer'],
-                error: ['#EF4444','rgba(239,68,68,0.3)','rgba(239,68,68,0.05)','Retry',false,'pointer'] }[s];
+    const m = { 
+      idle: ['#4B5563','rgba(255,255,255,0.08)','rgba(255,255,255,0.03)','Analyze Audio',true,'not-allowed'],
+      ready: ['#00F0FF','rgba(0,240,255,0.35)','rgba(0,240,255,0.06)','Analyze Audio',false,'pointer'],
+      processing: ['#6B7280','rgba(255,255,255,0.08)','rgba(255,255,255,0.03)','Processing…',true,'not-allowed'],
+      done: ['#10B981','rgba(16,185,129,0.3)','rgba(16,185,129,0.06)','Analysis Complete',false,'pointer'],
+      error: ['#EF4444','rgba(239,68,68,0.3)','rgba(239,68,68,0.05)','Retry',false,'pointer'] 
+    }[s];
     if (!m) return;
     [btn.style.color, btn.style.borderColor, btn.style.background, btn.textContent, btn.disabled, btn.style.cursor] = m;
   }
@@ -397,5 +420,8 @@ export class AudioLab {
     const d = document.getElementById('error-detail');  if (d) d.textContent = detail || '';
   }
 
-  _hideError() { const p = document.getElementById('error-panel'); if (p) p.style.display = 'none'; }
+  _hideError() { 
+    const p = document.getElementById('error-panel'); 
+    if (p) p.style.display = 'none'; 
+  }
 }
